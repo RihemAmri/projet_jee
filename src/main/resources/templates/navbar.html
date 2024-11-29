@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Character encoding for the document -->
+    <meta charset="UTF-8">
+    <!-- Viewport settings for responsive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title of the page -->
+    <title>Navbar</title>
+    <!-- Link to the external CSS file for styling -->
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+<!-- Navbar component using Bootstrap classes -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Brand name or logo that links to the home page -->
+    <a class="navbar-brand" href="#">PathMates</a>
+    <!-- Button for toggling the navbar on mobile devices -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- Icon for the toggle button -->
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Navbar menu items -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <!-- Home link (active by default) -->
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <!-- About link -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+            </li>
+            <!-- Contact link -->
+            <li class="nav-item">
+                <a class="nav-link" href="#">Contact</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+</body>
+</html>
