@@ -1,15 +1,10 @@
 package com.example.covoiturage.entity;
 
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import org.springframework.data.annotation.Id;
 @Entity
-public class User {
-
-    @jakarta.persistence.Id
+@Table(name="user")
+public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -88,8 +83,4 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-
-
 }
-
-

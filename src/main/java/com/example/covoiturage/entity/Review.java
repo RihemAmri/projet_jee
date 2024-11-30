@@ -12,7 +12,7 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User reviewer; // Utilisateur qui laisse l'évaluation
+    private AppUser reviewer; // Utilisateur qui laisse l'évaluation
 
     @ManyToOne
     @JoinColumn(name = "ride_id", nullable = false)
@@ -33,11 +33,11 @@ public class Review {
         this.id = id;
     }
 
-    public User getReviewer() {
+    public AppUser getReviewer() {
         return reviewer;
     }
 
-    public void setReviewer(User reviewer) {
+    public void setReviewer(AppUser reviewer) {
         this.reviewer = reviewer;
     }
 

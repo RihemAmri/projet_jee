@@ -11,7 +11,7 @@ public class Ride {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User driver; // Conducteur (référence à l'entité User)
+    private AppUser driver; // Conducteur (référence à l'entité User)
 
     @Column(nullable = false)
     private String departurePoint; // Point de départ (ville ou adresse)
@@ -43,11 +43,11 @@ public class Ride {
         this.id = id;
     }
 
-    public User getDriver() {
+    public AppUser getDriver() {
         return driver;
     }
 
-    public void setDriver(User driver) {
+    public void setDriver(AppUser driver) {
         this.driver = driver;
     }
 

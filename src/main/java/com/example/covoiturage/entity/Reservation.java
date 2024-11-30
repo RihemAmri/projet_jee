@@ -12,8 +12,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User passenger; // Passager (référence à l'entité User)
-
+    private AppUser passenger;
     @ManyToOne
     @JoinColumn(name = "ride_id", nullable = false)
     private Ride ride; // Trajet réservé (référence à l'entité Ride)
@@ -30,11 +29,11 @@ public class Reservation {
         this.id = id;
     }
 
-    public User getPassenger() {
+    public AppUser getPassenger() {
         return passenger;
     }
 
-    public void setPassenger(User passenger) {
+    public void setPassenger(AppUser passenger) {
         this.passenger = passenger;
     }
 
