@@ -64,12 +64,13 @@ public class AccountController {
 
             model.addAttribute("registerDto", new RegisterDto());
             model.addAttribute("success", true);
-            return "redirect:/register";
+            return "register";
 
         } catch (Exception e) {
             System.out.println("Error saving user: " + e.getMessage());  // Log d'erreur
             result.addError(new FieldError("registerDto", "firstName", e.getMessage()));
         }
+
 
         return "register";  // Retourne à la page d'inscription
     }

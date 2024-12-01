@@ -21,6 +21,8 @@ public class SecurityConfig {
                  .requestMatchers ("/register"). permitAll()
                  .requestMatchers ("/login") .permitAll()
                  .requestMatchers ("/logout"). permitAll()
+                 .requestMatchers ("/rides"). permitAll()
+                        .requestMatchers ("/about"). permitAll()
                  .anyRequest().authenticated ())
                  . formLogin (form -> form
             .defaultSuccessUrl ("/", true))

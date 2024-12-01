@@ -17,14 +17,15 @@ public class UserServiceImpl implements UserDetailsService{
     @Override
    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         AppUser appuser = userRepository.findByEmail(email);
-if(appuser != null) {
+        System.out.println(appuser.toString());
+   if(appuser != null) {
     var springUser = User.withUsername (appuser.getEmail())
             .password (appuser.getPassword())
             .roles (appuser.getRole())
             .build();
     return springUser;
-
 }
+   System.out.println("hani linaaaa");
         return null;
     }
 }
