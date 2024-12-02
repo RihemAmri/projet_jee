@@ -23,7 +23,9 @@ public class SecurityConfig {
                  .requestMatchers ("/logout"). permitAll()
                  .requestMatchers ("/rides"). permitAll()
                         .requestMatchers ("/about"). permitAll()
-                 .anyRequest().authenticated ())
+                        .requestMatchers( "/css/**", "/images/**", "/js/**").permitAll()
+
+                        .anyRequest().authenticated ())
                  . formLogin (form -> form
             .defaultSuccessUrl ("/", true))
             .logout (config -> config.logoutSuccessUrl ("/"))
