@@ -1,0 +1,44 @@
+/* navbar.css - Styles globaux pour le navbar */
+nav .nav-link.active {
+    color: #ff7043 !important; /* Couleur active des liens */
+}
+
+.navbar-brand span {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff7043;
+    margin-left: 10px;
+}
+
+.navbar-nav {
+    flex-direction: row; /* Aligner les liens horizontalement */
+    justify-content: center; /* Centrer les éléments */
+    width: 100%;
+}
+
+.navbar-nav .nav-item {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.btn-primary {
+    background-color: #ff7043; /* Couleur des boutons principaux */
+    color: white;
+    border: none;
+    outline: none;
+}
+
+.btn-primary:focus, .btn-primary:hover {
+    background-color: #ff7043;
+    color: white;
+}
+
+.btn-outline-primary {
+    border-color: #ff7043;
+    color: #ff7043;
+}
+
+.btn-outline-primary:hover {
+    background-color: #ff7043;
+    color: white;
+}

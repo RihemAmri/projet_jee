@@ -118,10 +118,11 @@
         <div class="mb-3 role-options">
             <label for="role">Role:</label>
             <div>
-                <input type="radio" id="rider" name="role" value="Rider" th:field="*{role}">
-                <label for="rider">Rider</label>
-                <input type="radio" id="passenger" name="role" value="Passenger" th:field="*{role}">
+                <input type="radio" id="driver" name="role" value="driver" th:field="*{role}">
+                <label for="driver">Driver</label>
+                <input type="radio" id="passenger" name="role" value="passenger" th:field="*{role}">
                 <label for="passenger">Passenger</label>
+
             </div>
             <span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-danger"></span>
         </div>

@@ -15,17 +15,23 @@ public class UserServiceImpl implements UserDetailsService{
     @Autowired
     private UserRepository userRepository;
     @Override
-   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        // Retrieve the user from the repository
         AppUser appuser = userRepository.findByEmail(email);
-        System.out.println(appuser.toString());
-   if(appuser != null) {
-    var springUser = User.withUsername (appuser.getEmail())
-            .password (appuser.getPassword())
-            .roles (appuser.getRole())
-            .build();
-    return springUser;
-}
-   System.out.println("hani linaaaa");
-        return null;
+
+        // Debugging log to check if the user was found
+        if (appuser == null) {
+            System.out.println("User not found with email: " + email);
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+
+        // Logging appuser details (if needed)
+        System.out.println("User found: " + appuser.toString());
+
+        // Construct Spring Security User with username, password, and role
+        return User.withUsername(appuser.getEmail())
+                .password(appuser.getPassword())
+                .roles(appuser.getRole().toUpperCase()) // Ensure role is uppercase
+                .build();
     }
 }
