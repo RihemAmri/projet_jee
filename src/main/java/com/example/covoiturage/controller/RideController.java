@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,9 +35,17 @@ public class RideController {
 
     // Méthode pour afficher tous les trajets
     @GetMapping("/rides")
-    public String getAllRides(Model model) {
+    public String getAllRides(HttpSession session, Model model) {
+        // Récupérer les informations de la session
+        String role = (String) session.getAttribute("role");  // récupérer le rôle de l'utilisateur depuis la session
+
+        // Ajouter le rôle au modèle pour l'afficher dans la page
+        model.addAttribute("role", role);
+
+        // Récupérer tous les trajets
         List<Ride> rides = rideService.getAllRides(); // Récupérer tous les trajets
         model.addAttribute("rides", rides); // Ajouter les trajets au modèle
+
         return "rides"; // Retourner la vue "rides"
     }
 
@@ -48,7 +57,13 @@ public class RideController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime departureDate,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String driverName,
-            Model model) {
+            HttpSession session, Model model) {
+
+        // Récupérer les informations de la session
+        String role = (String) session.getAttribute("role");  // récupérer le rôle de l'utilisateur depuis la session
+
+        // Ajouter le rôle au modèle pour l'afficher dans la page
+        model.addAttribute("role", role);
 
         // Convertir LocalDateTime en Date
         Date dateForSearch = convertToDate(departureDate);

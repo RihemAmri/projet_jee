@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logout Confirmation</title>
+</head>
+<body>
+
+<!-- Bouton de déconnexion -->
+<a href="#" onclick="confirmLogout()">Se déconnecter</a>
+
+<script type="text/javascript">
+  // Fonction de confirmation de la déconnexion
+  function confirmLogout() {
+    var result = confirm("Êtes-vous sûr de vouloir vous déconnecter ?");
+
+    if (result) {
+      // Si l'utilisateur clique sur "Oui", faire la déconnexion
+      window.location.href = "/logout";  // Redirection vers la déconnexion gérée par Spring Security
+    } else {
+      // Si l'utilisateur clique sur "Annuler", rien ne se passe
+      return false;
+    }
+  }
+</script>
+
+</body>
+</html>

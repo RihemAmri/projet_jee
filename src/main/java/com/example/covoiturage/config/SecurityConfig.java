@@ -15,24 +15,28 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests ( auth -> auth
-                 .requestMatchers ("/"). permitAll()
-                 .requestMatchers ("/contact") .permitAll()
-                  .requestMatchers ("/store/**") .permitAll()
-                 .requestMatchers ("/register"). permitAll()
-                 .requestMatchers ("/login") .permitAll()
-                 .requestMatchers ("/logout"). permitAll()
-                 .requestMatchers ("/rides"). permitAll()
+                        .requestMatchers ("/"). permitAll()
+                        .requestMatchers ("/contact") .permitAll()
+                        .requestMatchers ("/store/**") .permitAll()
+                        .requestMatchers ("/register"). permitAll()
+                        .requestMatchers ("/login"). permitAll()
+
+                        .requestMatchers ("/loginn") .permitAll()
+                        .requestMatchers ("/logout"). permitAll()
+                        .requestMatchers ("/rides"). permitAll()
                         .requestMatchers ("/about"). permitAll()
                         .requestMatchers( "/css/**", "/images/**", "/js/**").permitAll()
 
                         .anyRequest().authenticated ())
-                 . formLogin (form -> form
-            .defaultSuccessUrl ("/", true))
-            .logout (config -> config.logoutSuccessUrl ("/"))
-             .build();
-}
-@Bean
+                . formLogin (form -> form
+                        .defaultSuccessUrl ("/", true))
+                .logout (config -> config.logoutSuccessUrl ("/"))
+
+                .build();
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-}
+    }
 }

@@ -74,4 +74,5 @@ public class AccountController {
 
         return "register";  // Retourne à la page d'inscription
     }
+
 }

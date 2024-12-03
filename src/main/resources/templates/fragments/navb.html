@@ -14,12 +14,13 @@
             <li class="nav-item">
               <a class="nav-link active" href="#">Home</a>
             </li>
+
             <!-- Affichage conditionnel pour les Conducteurs -->
-            <!-- Si rôle = driver -->
-            <li class="nav-item" th:if="${role == 'DRIVER'}">
+            <li class="nav-item" th:if="${role == 'driver'}">
+
               <a class="nav-link" href="/create-ride">Proposer un trajet</a>
             </li>
-            <li class="nav-item" th:if="${role == 'PASSENGER'}">
+            <li class="nav-item" th:if="${role == 'passenger'}">
               <a class="nav-link" href="/rides">Search rides</a>
             </li>
 
@@ -32,15 +33,15 @@
             <li class="nav-item">
               <a class="nav-link" href="#">Reviews</a>
             </li>
-            <!-- Si l'utilisateur est connecté, afficher le bouton Déconnexion -->
-            <!-- Check if the role is not null or not a passenger -->
+
+            <!-- Afficher bouton 'Log out' si l'utilisateur est connecté -->
             <li class="nav-item" th:if="${role != null}">
-              <a class="btn btn-outline-danger ms-2" href="/logout">Logout</a>
+              <a class="btn btn-outline-danger ms-2" href="/logout">Log out</a>
             </li>
 
-            <!-- If the role is null, display Sign In and Sign Up -->
+            <!-- Afficher 'Sign In' et 'Sign Up' si l'utilisateur n'est pas connecté -->
             <li class="nav-item" th:if="${role == null}">
-              <a class="btn btn-outline-primary ms-2" href="/login">Sign In</a>
+              <a class="btn btn-outline-primary ms-2" href="/loginn">Sign In</a>
               <a class="btn btn-primary ms-2" href="/register">Sign Up</a>
             </li>
           </ul>
