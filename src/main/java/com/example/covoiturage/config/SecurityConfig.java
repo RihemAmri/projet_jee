@@ -20,7 +20,7 @@ public class SecurityConfig {
                         .requestMatchers ("/store/**") .permitAll()
                         .requestMatchers ("/register"). permitAll()
                         .requestMatchers ("/login"). permitAll()
-
+                        .requestMatchers("/rides/search").permitAll()
                         .requestMatchers ("/loginn") .permitAll()
                         .requestMatchers ("/logout"). permitAll()
                         .requestMatchers ("/rides"). permitAll()
