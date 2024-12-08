@@ -35,6 +35,10 @@ public class AppUser {
     public void setId(Long id) {
         this.id = id;
     }
+    public AppUser() {}
+    public AppUser(Long id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;

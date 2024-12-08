@@ -1,5 +1,7 @@
 package com.example.covoiturage.entity;
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 @Entity
@@ -10,7 +12,7 @@ public class Ride {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id",nullable = false)
     private AppUser driver; // Conducteur (référence à l'entité User)
 
     @Column(nullable = false)
@@ -18,9 +20,9 @@ public class Ride {
 
     @Column(nullable = false)
     private String destination; // Destination (ville ou adresse)
-
     @Column(nullable = false)
-    private Date departureDate; // Date et heure du départ
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private Date departureDate; // Utilisation de l'annotation @DateTimeFormat
 
     @Column(nullable = false)
     private int availableSeats; // Nombre de places disponibles

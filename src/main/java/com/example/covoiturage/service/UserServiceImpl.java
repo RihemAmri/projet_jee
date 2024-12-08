@@ -14,6 +14,9 @@ import java.util.Optional;
 public class UserServiceImpl implements UserDetailsService{
     @Autowired
     private UserRepository userRepository;
+    public AppUser findById(Long id) {
+        return userRepository.findById(id).orElse(null); // Retourne null si l'utilisateur n'est pas trouvé
+    }
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // Retrieve the user from the repository

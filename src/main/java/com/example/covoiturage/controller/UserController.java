@@ -1,5 +1,6 @@
 package com.example.covoiturage.controller;
 
+import com.example.covoiturage.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository; // Pour récupérer les utilisateurs de la DB
+
 
     @Autowired
     private PasswordEncoder passwordEncoder; // Pour le décryptage du mot de passe
@@ -50,11 +52,17 @@ public class UserController {
             System.out.println("linaaaaaaaaaaa");
             // Si les informations de connexion sont valides, créer une session
             session.setAttribute("email", user.getEmail());
+            session.setAttribute("id", user.getId());
             session.setAttribute("role", user.getRole());
             model.addAttribute("role", user.getRole());
             System.out.println(user.getRole());
-            // Redirection vers la page des trajets
-            return "redirect:/rides";
+
+            if ("driver".equals(user.getRole())) {
+                return "redirect:/Myrides";  // Page pour le conducteur
+            } else if ("passenger".equals(user.getRole())) {
+                return "redirect:/rides";  // Page pour le passager
+            }
+            return "loginn";
         } else {
             // Si les informations de connexion sont invalides, redirection vers la page de login
             return "redirect:/loginn";

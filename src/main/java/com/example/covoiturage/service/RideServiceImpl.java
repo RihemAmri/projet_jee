@@ -29,5 +29,10 @@ public class RideServiceImpl implements RideService {
         }
         return rideRepository.searchRides(departurePoint, destination, departureDate, maxPrice, driverName);
     }
+    @Override
+    public Ride saveRide(Ride ride) {
+        // Sauvegarde du Ride dans la base de données
+        return rideRepository.save(ride);
+    }
 
 }

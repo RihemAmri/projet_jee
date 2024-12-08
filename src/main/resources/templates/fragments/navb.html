@@ -16,11 +16,11 @@
             </li>
 
             <!-- Affichage conditionnel pour les Conducteurs -->
-            <li class="nav-item" th:if="${role == 'driver'}">
+            <li class="nav-item" th:if="${session.role == 'driver'}">
 
-              <a class="nav-link" href="/create-ride">Proposer un trajet</a>
+              <a class="nav-link" href="/addrides">Proposer un trajet</a>
             </li>
-            <li class="nav-item" th:if="${role == 'passenger'}">
+            <li class="nav-item" th:if="${session.role == 'passenger'}">
               <a class="nav-link" href="/rides">Search rides</a>
             </li>
 
@@ -34,13 +34,15 @@
               <a class="nav-link" href="#">Reviews</a>
             </li>
 
-            <!-- Afficher bouton 'Log out' si l'utilisateur est connecté -->
-            <li class="nav-item" th:if="${role != null}">
+
+            <li class="nav-item" th:if="${session.role != null}">
               <a class="btn btn-outline-danger ms-2" href="/logout">Log out</a>
+
             </li>
 
-            <!-- Afficher 'Sign In' et 'Sign Up' si l'utilisateur n'est pas connecté -->
-            <li class="nav-item" th:if="${role == null}">
+
+
+            <li class="nav-item" th:if="${session.role == null}">
               <a class="btn btn-outline-primary ms-2" href="/loginn">Sign In</a>
               <a class="btn btn-primary ms-2" href="/register">Sign Up</a>
             </li>

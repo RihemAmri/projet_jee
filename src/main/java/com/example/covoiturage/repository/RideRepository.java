@@ -16,6 +16,6 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
             + "(:maxPrice IS NULL OR r.pricePerSeat <= :maxPrice) AND "
             + "(:driverName IS NULL OR LOWER(CONCAT(r.driver.firstName, ' ', r.driver.lastName)) LIKE LOWER(CONCAT('%', :driverName, '%'))) ")
     List<Ride> searchRides(String departurePoint, String destination, Date departureDate, Double maxPrice, String driverName);
-
+    List<Ride> findByDriverId(Long driverId);
 
 }
