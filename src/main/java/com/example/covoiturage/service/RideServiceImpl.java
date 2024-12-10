@@ -35,4 +35,13 @@ public class RideServiceImpl implements RideService {
         return rideRepository.save(ride);
     }
 
+
+
+
+
+    @Override
+    public Ride findRideById(Long rideId) {
+        return rideRepository.findById(rideId).orElse(null); // Récupère le trajet par son ID ou renvoie null s'il n'existe pas
+    }
+
 }

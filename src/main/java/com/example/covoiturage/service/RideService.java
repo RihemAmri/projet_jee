@@ -11,4 +11,8 @@ public interface RideService {
     // Méthode pour rechercher les trajets en fonction des critères
     List<Ride> searchRides(String departurePoint, String destination, Date departureDate, Double maxPrice, String driverName);
 
+
+
+
+    Ride findRideById(Long rideId);
 }

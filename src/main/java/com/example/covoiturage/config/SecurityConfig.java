@@ -27,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers ("/Myrides").permitAll()
                         .requestMatchers ("/addrides").permitAll()
                         .requestMatchers ("/rides"). permitAll()
+                        .requestMatchers ("/book-ride/{rideId}"). permitAll()
                         .requestMatchers ("/about"). permitAll()
                         .requestMatchers( "/css/**", "/images/**", "/js/**").permitAll()
 

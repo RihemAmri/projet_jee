@@ -20,6 +20,9 @@ public class Reservation {
     @Column(nullable = false)
     private int seatsReserved; // Nombre de places réservées
 
+    @Column(nullable = false)
+    private double totalPrice; // Le prix total calculé automatiquement
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -51,5 +54,16 @@ public class Reservation {
 
     public void setSeatsReserved(int seatsReserved) {
         this.seatsReserved = seatsReserved;
+    }
+
+    public void calculateTotalPrice() {
+        this.totalPrice = this.seatsReserved * this.ride.getPricePerSeat();
+    }
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }
