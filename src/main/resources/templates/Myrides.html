@@ -35,9 +35,9 @@
             <td th:text="${ride.comments}"></td>
             <td style="white-space: nowrap">
                 <a class="btn btn-primary btn-sm"
-                   th:href="@{/rides/edit(id=${ride.id})}">Edit</a>
+                   th:href="@{/rides/edit/{id}(id=${ride.id})}">Edit</a>
                 <a class="btn btn-danger btn-sm"
-                   th:href="@{/rides/delete(id=${ride.id})}"
+                   th:href="@{/rides/delete/{id}(id=${ride.id})}"
                    onclick="return confirm('Are you sure?')">Delete</a>
             </td>
         </tr>

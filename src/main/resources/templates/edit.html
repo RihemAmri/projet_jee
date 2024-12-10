@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Ride</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="/css/navbar.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/navb :: navbar}"></div>
+<div class="container mt-5">
+    <h1>Edit Ride</h1>
+    <form th:action="@{/rides/edit/{id}(id=${ride.id})}" th:object="${ride}" method="post">
+        <div class="mb-3">
+            <label for="departurePoint" class="form-label">Departure Point</label>
+            <input type="text" class="form-control" id="departurePoint" th:field="*{departurePoint}" required>
+        </div>
+        <div class="mb-3">
+            <label for="destination" class="form-label">Destination</label>
+            <input type="text" class="form-control" id="destination" th:field="*{destination}" required>
+        </div>
+        <div class="mb-3">
+            <label for="departureDate" class="form-label">Departure Date</label>
+            <input type="datetime-local" class="form-control" id="departureDate" th:field="*{departureDate}" required>
+        </div>
+        <div class="mb-3">
+            <label for="availableSeats" class="form-label">Available Seats</label>
+            <input type="number" class="form-control" id="availableSeats" th:field="*{availableSeats}" required>
+        </div>
+        <div class="mb-3">
+            <label for="pricePerSeat" class="form-label">Price Per Seat</label>
+            <input type="number" step="0.01" class="form-control" id="pricePerSeat" th:field="*{pricePerSeat}" required>
+        </div>
+        <div class="mb-3">
+            <label for="comments" class="form-label">Comments</label>
+            <textarea class="form-control" id="comments" th:field="*{comments}" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+</body>
+</html>

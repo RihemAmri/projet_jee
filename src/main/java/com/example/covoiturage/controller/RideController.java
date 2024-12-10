@@ -143,4 +143,33 @@ public class RideController {
         // Retourner le nom de la vue Thymeleaf (Myrides.html)
         return "Myrides";
     }
+    @GetMapping("rides/edit/{id}")
+    public String editRide(@PathVariable("id") Long id, Model model) {
+        Ride ride = rideService.getRideById(id);
+        if (ride == null) {
+            System.out.println("Ride not found for ID: " + id);
+            return "redirect:/rides";
+        }
+        System.out.println("Editing Ride ID: " + id);
+        model.addAttribute("ride", ride);
+        return "edit";
+    }
+
+    // Mettre à jour un ride
+    @PostMapping("/rides/edit/{id}")
+    public String updateRide(@PathVariable Long id, @ModelAttribute Ride ride) {
+        ride.setId(id);
+        rideService.updateRide(ride);
+        return "redirect:/Myrides";
+    }
+
+    // Supprimer un ride
+    @GetMapping("/delete/{id}")
+    public String deleteRide(@PathVariable("id") Long id) {
+        System.out.println("mizilt mawsiltich");
+        rideService.deleteRide(id);
+        System.out.println("linaa");
+        return "redirect:/Myrides";
+    }
 }
+

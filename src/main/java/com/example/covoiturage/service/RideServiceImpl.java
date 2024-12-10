@@ -34,5 +34,19 @@ public class RideServiceImpl implements RideService {
         // Sauvegarde du Ride dans la base de données
         return rideRepository.save(ride);
     }
+    @Override
+    public Ride getRideById(Long id) {
+        return rideRepository.findById(id).orElseThrow(() -> new RuntimeException("Ride not found"));
+    }
+
+    @Override
+    public void updateRide(Ride ride) {
+        rideRepository.save(ride);
+    }
+
+    @Override
+    public void deleteRide(Long id) {
+        rideRepository.deleteById(id);
+    }
 
 }
