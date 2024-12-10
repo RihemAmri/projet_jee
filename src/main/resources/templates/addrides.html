@@ -5,48 +5,261 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create a Ride</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body {
+            background-color: #f4f7fc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-family: 'Arial', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: bold;
+            color: #333;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            padding: 12px;
+            font-size: 1rem;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        .btn-primary {
+            border-radius: 10px;
+            background-color: #007bff;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .location-mode {
+            display: flex;
+            justify-content: space-between;
+            background-color: #fff;
+            padding: 12px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .location-mode button {
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            background-color: #ff7043;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .location-mode button:hover {
+            background-color: #fa886f;
+        }
+        #map {
+            height: 450px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .search-container {
+            position: relative;
+            margin-top: 20px;
+        }
+        #searchResults {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 0;
+        }
+        #searchResults div {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #searchResults div:hover {
+            background-color: #f8f9fa;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
+        .col-md-6 {
+            width: 48%;
+        }
+        .col-md-6:first-child {
+            margin-right: 2%;
+        }
+    </style>
 </head>
 <body>
-<div class="container my-4">
+<div class="container my-5">
     <h1 class="text-center">Create a Ride</h1>
     <form th:action="@{/addrides}" method="POST">
-        <div class="mb-3">
-            <label for="departurePoint" class="form-label">Departure Point</label>
-            <input type="text" id="departurePoint" class="form-control" name="departurePoint" required>
-        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="departurePoint" class="form-label">Departure Point</label>
+                    <input type="text" id="departurePoint" class="form-control" name="departurePoint" required readonly>
+                </div>
 
-        <div class="mb-3">
-            <label for="destination" class="form-label">Destination</label>
-            <input type="text" id="destination" class="form-control" name="destination" required>
-        </div>
+                <div class="mb-3">
+                    <label for="destination" class="form-label">Destination</label>
+                    <input type="text" id="destination" class="form-control" name="destination" required readonly>
+                </div>
 
-        <div class="mb-3">
-            <label for="departureDate" class="form-label">Departure Date</label>
-            <input type="datetime-local" id="departureDate" class="form-control" name="departureDate" required>
-        </div>
+                <div class="mb-3">
+                    <label for="departureDate" class="form-label">Departure Date</label>
+                    <input type="datetime-local" id="departureDate" class="form-control" name="departureDate" required>
+                </div>
 
-        <div class="mb-3">
-            <label for="availableSeats" class="form-label">Available Seats</label>
-            <input type="number" id="availableSeats" class="form-control" name="availableSeats" required min="1">
-        </div>
+                <div class="mb-3">
+                    <label for="availableSeats" class="form-label">Available Seats</label>
+                    <input type="number" id="availableSeats" class="form-control" name="availableSeats" required min="1">
+                </div>
 
-        <div class="mb-3">
-            <label for="pricePerSeat" class="form-label">Price Per Seat</label>
-            <input type="number" id="pricePerSeat" class="form-control" name="pricePerSeat" required min="0" step="0.01">
-        </div>
+                <div class="mb-3">
+                    <label for="pricePerSeat" class="form-label">Price Per Seat</label>
+                    <input type="number" id="pricePerSeat" class="form-control" name="pricePerSeat" required min="0" step="0.01">
+                </div>
 
-        <div class="mb-3">
-            <label for="comments" class="form-label">Comments</label>
-            <textarea id="comments" class="form-control" name="comments" rows="3"></textarea>
-        </div>
+                <div class="mb-3">
+                    <label for="comments" class="form-label">Comments</label>
+                    <textarea id="comments" class="form-control" name="comments" rows="3"></textarea>
+                </div>
 
-        <div class="mb-3">
-            <label for="restrictions" class="form-label">Restrictions</label>
-            <input type="text" id="restrictions" class="form-control" name="restrictions">
-        </div>
+                <div class="mb-3">
+                    <label for="restrictions" class="form-label">Restrictions</label>
+                    <input type="text" id="restrictions" class="form-control" name="restrictions">
+                </div>
 
-        <button type="submit" class="btn btn-primary w-100">Create Ride</button>
+                <button type="submit" class="btn btn-primary">Create Ride</button>
+            </div>
+
+            <div class="col-md-6">
+                <!-- Toggle Buttons for map or search mode -->
+                <div class="location-mode">
+                    <button id="mapModeBtn" class="btn btn-secondary">Select Location on Map</button>
+                    <button id="searchModeBtn" class="btn btn-secondary">Search for a Location</button>
+                </div>
+
+                <!-- Search bar and results container -->
+                <div class="search-container">
+                    <input type="text" id="locationSearch" class="form-control" placeholder="Search for a location...">
+                    <div id="searchResults"></div>
+                </div>
+
+                <!-- Map Container -->
+                <div id="map"></div>
+            </div>
+        </div>
     </form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+    // Initialize the map
+    const map = L.map('map').setView([51.505, -0.09], 13); // Default center
+
+    // Add tile layer to the map (Leaflet OpenStreetMap tiles)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    // Marker variables
+    let departureMarker = null;
+    let destinationMarker = null;
+    let currentMode = 'search'; // Default mode is search
+
+    // Function to search location
+    function searchLocation(query) {
+        $.ajax({
+            url: `https://nominatim.openstreetmap.org/search?format=json&q=${query}`,
+            method: 'GET',
+            success: function(data) {
+                const results = data;
+                $('#searchResults').empty(); // Clear previous results
+
+                if (results.length) {
+                    results.forEach(function(result) {
+                        const location = result.display_name;
+                        const lat = result.lat;
+                        const lon = result.lon;
+
+                        // Display the results
+                        const resultDiv = $('<div>').text(location).on('click', function() {
+                            const latLng = [lat, lon];
+                            if (currentMode === 'search') {
+                                if (!departureMarker) {
+                                    departureMarker = L.marker(latLng).addTo(map);
+                                    document.getElementById('departurePoint').value = location; // Update field with location name
+                                } else if (!destinationMarker) {
+                                    destinationMarker = L.marker(latLng).addTo(map);
+                                    document.getElementById('destination').value = location; // Update field with location name
+                                }
+                                map.setView(latLng, 13); // Center map on the selected location
+                            }
+                            $('#searchResults').empty(); // Clear the search results
+                        });
+                        $('#searchResults').append(resultDiv);
+                    });
+                } else {
+                    $('#searchResults').html('<div>No results found.</div>');
+                }
+            }
+        });
+    }
+
+    // Listen for input changes and perform search
+    $('#locationSearch').on('input', function() {
+        const query = $(this).val();
+        if (query.length > 2) { // Trigger search only when input has more than 2 characters
+            searchLocation(query);
+        } else {
+            $('#searchResults').empty(); // Clear results if query is too short
+        }
+    });
+
+    // Change to map selection mode
+    $('#mapModeBtn').on('click', function() {
+        currentMode = 'map';
+        $('#locationSearch').hide();
+        $('#searchResults').empty(); // Clear search results
+        map.on('click', function(e) {
+            if (!departureMarker) {
+                departureMarker = L.marker(e.latlng).addTo(map);
+                document.getElementById('departurePoint').value = `Lat: ${e.latlng.lat}, Lng: ${e.latlng.lng}`;
+            } else if (!destinationMarker) {
+                destinationMarker = L.marker(e.latlng).addTo(map);
+                document.getElementById('destination').value = `Lat: ${e.latlng.lat}, Lng: ${e.latlng.lng}`;
+            }
+        });
+    });
+
+    // Change to search mode
+    $('#searchModeBtn').on('click', function() {
+        currentMode = 'search';
+        $('#locationSearch').show();
+        map.off('click'); // Disable map click event
+    });
+</script>
 </body>
 </html>
