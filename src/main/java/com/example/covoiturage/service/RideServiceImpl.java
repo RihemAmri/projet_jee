@@ -39,14 +39,21 @@ public class RideServiceImpl implements RideService {
         return rideRepository.findById(id).orElseThrow(() -> new RuntimeException("Ride not found"));
     }
 
+
+
     @Override
-    public void updateRide(Ride ride) {
-        rideRepository.save(ride);
+    public void delete(Ride ride) {
+        rideRepository.delete(ride);
+    }
+    @Override
+    public Ride findRideById(Long id) {
+        return rideRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ride not found with id: " + id));
     }
 
     @Override
-    public void deleteRide(Long id) {
-        rideRepository.deleteById(id);
+    public void updateRide(Ride ride) {
+        rideRepository.save(ride); // Hibernate détecte automatiquement les modifications
     }
 
 }
