@@ -2,16 +2,16 @@ package com.example.covoiturage.controller;
 
 import com.example.covoiturage.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.security.core.Authentication;
+
 import org.springframework.ui.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.example.covoiturage.entity.AppUser;
 import com.example.covoiturage.repository.UserRepository;
 
@@ -24,8 +24,7 @@ public class UserController {
     private UserRepository userRepository; // Pour récupérer les utilisateurs de la DB
 
 
-    @Autowired
-    private PasswordEncoder passwordEncoder; // Pour le décryptage du mot de passe
+
 
     // Page d'accueil (about)
     @GetMapping({"", "/"})

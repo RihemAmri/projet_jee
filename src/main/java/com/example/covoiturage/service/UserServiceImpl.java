@@ -37,4 +37,5 @@ public class UserServiceImpl implements UserDetailsService{
                 .roles(appuser.getRole().toUpperCase()) // Ensure role is uppercase
                 .build();
     }
+
 }

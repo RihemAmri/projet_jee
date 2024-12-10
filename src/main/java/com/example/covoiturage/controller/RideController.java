@@ -143,4 +143,58 @@ public class RideController {
         // Retourner le nom de la vue Thymeleaf (Myrides.html)
         return "Myrides";
     }
+    @GetMapping("rides/edit/{id}")
+    public String editRide(@PathVariable("id") Long id, Model model) {
+        Ride ride = rideService.getRideById(id);
+        if (ride == null) {
+            System.out.println("Ride not found for ID: " + id);
+            return "redirect:/rides";
+        }
+        System.out.println("Editing Ride ID: " + id);
+        model.addAttribute("ride", ride);
+        return "edit";
+    }
+
+    // Mettre à jour un ride
+    @PostMapping("/rides/edit/{id}")
+    public String updateRide(@PathVariable Long id, @ModelAttribute Ride ride) {
+        // Récupérer la version existante de la base de données
+        Ride existingRide = rideService.findRideById(id);
+        if (existingRide == null) {
+            throw new IllegalArgumentException("Ride not found for id: " + id);
+        }
+
+        // Mise à jour conditionnelle des champs
+        if (!existingRide.getDeparturePoint().equals(ride.getDeparturePoint())) {
+            existingRide.setDeparturePoint(ride.getDeparturePoint());
+        }
+        if (!existingRide.getDestination().equals(ride.getDestination())) {
+            existingRide.setDestination(ride.getDestination());
+        }
+        if (!existingRide.getDepartureDate().equals(ride.getDepartureDate())) {
+            existingRide.setDepartureDate(ride.getDepartureDate());
+        }
+        if (existingRide.getAvailableSeats() != ride.getAvailableSeats()) {
+            existingRide.setAvailableSeats(ride.getAvailableSeats());
+        }
+        if (existingRide.getPricePerSeat() != ride.getPricePerSeat()) {
+            existingRide.setPricePerSeat(ride.getPricePerSeat());
+        }
+        if (!existingRide.getComments().equals(ride.getComments())) {
+            existingRide.setComments(ride.getComments());
+        }
+
+        // Appeler le service pour sauvegarder les modifications
+        rideService.updateRide(existingRide);
+
+        return "redirect:/Myrides";
+    }
+
+    @GetMapping("/rides/delete/{id}")
+    public String deleteRide(@PathVariable Long id) {
+        Ride existingRide = rideService.findRideById(id);
+        rideService.delete(existingRide);
+        return "redirect:/Myrides"; // Redirige vers la liste des rides
+    }
 }
+

@@ -10,9 +10,9 @@ public interface RideService {
     List<Ride> getAllRides();
     // Méthode pour rechercher les trajets en fonction des critères
     List<Ride> searchRides(String departurePoint, String destination, Date departureDate, Double maxPrice, String driverName);
+    Ride getRideById(Long id);
+    Ride findRideById(Long id); // Trouver un ride par ID
+    void updateRide(Ride ride);
 
-
-
-
-    Ride findRideById(Long rideId);
+    void delete(Ride ride);
 }
