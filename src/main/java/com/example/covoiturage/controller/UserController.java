@@ -43,31 +43,33 @@ public class UserController {
 
     // Gérer la soumission du formulaire de connexion (POST)
     @PostMapping("/loginn")
-    public String handleLogin(String email, String password, HttpSession session,Model model) {
-        // Vérifier si l'utilisateur existe dans la base de données
-
+    public String handleLogin(String email, String password, HttpSession session, Model model) {
+        // Récupérer l'utilisateur par email
         AppUser user = userRepository.findByEmail(email);
 
-        if (user != null ) {
-            System.out.println("linaaaaaaaaaaa");
-            // Si les informations de connexion sont valides, créer une session
+        // Vérifier si l'utilisateur existe et si le mot de passe est valide
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+            // Créer une session manuelle
             session.setAttribute("email", user.getEmail());
             session.setAttribute("id", user.getId());
             session.setAttribute("role", user.getRole());
             model.addAttribute("role", user.getRole());
-            System.out.println(user.getRole());
 
+            // Rediriger l'utilisateur en fonction de son rôle
             if ("driver".equals(user.getRole())) {
                 return "redirect:/Myrides";  // Page pour le conducteur
             } else if ("passenger".equals(user.getRole())) {
                 return "redirect:/rides";  // Page pour le passager
+            } else {
+                // Par défaut, rediriger vers la page d'accueil ou autre page
+                return "redirect:/";
             }
-            return "loginn";
         } else {
-            // Si les informations de connexion sont invalides, redirection vers la page de login
+            // Si l'utilisateur n'est pas trouvé ou le mot de passe est incorrect, rediriger vers la page de login
             return "redirect:/loginn";
         }
     }
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // Invalider la session à la déconnexion

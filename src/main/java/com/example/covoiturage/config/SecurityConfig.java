@@ -2,6 +2,7 @@ package com.example.covoiturage.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers ("/addrides").permitAll()
                         .requestMatchers ("/rides"). permitAll()
                         .requestMatchers ("/book-ride/{rideId}"). permitAll()
+                        .requestMatchers(HttpMethod.POST, "/book-ride/{rideId}").permitAll()  // Pour la méthode POST sur /book-ride/{rideId}
                         .requestMatchers ("/about"). permitAll()
                         .requestMatchers( "/css/**", "/images/**", "/js/**").permitAll()
 

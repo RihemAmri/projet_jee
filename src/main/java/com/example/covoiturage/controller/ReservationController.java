@@ -25,6 +25,12 @@ public class ReservationController {
 
     @GetMapping("/book-ride/{rideId}")
     public String showBookingForm(@PathVariable Long rideId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        // Vérifier si l'utilisateur est connecté
+//        /*if (userDetails == null) {
+//            return "redirect:/loginn"; // Rediriger l'utilisateur vers la page de connexion s'il n'est pas connecté
+//
+//        }*/
+
         // Récupérer le trajet par son ID
         Ride ride = rideService.findRideById(rideId);
 
@@ -37,13 +43,24 @@ public class ReservationController {
         return "book-ride";
     }
 
+
     @PostMapping("/book-ride/{rideId}")
     public String bookRide(@PathVariable Long rideId, int numberOfSeats, @AuthenticationPrincipal UserDetails userDetails, Model model) {
-        // Convertir UserDetails en AppUser
+        // Vérifier si l'utilisateur est connecté
+        /*if (userDetails == null) {
+            return "redirect:/loginn"; // Si l'utilisateur n'est pas connecté, redirigez vers la page de connexion
+        }*/
+
+        // Convertir UserDetails en AppUser (s'il s'agit d'une instance d'AppUser)
         AppUser appUser = (AppUser) userDetails;
 
         // Récupérer le trajet
         Ride ride = rideService.findRideById(rideId);
+
+        if (ride == null) {
+            model.addAttribute("error", "Ride not found");
+            return "rides"; // Retourner à la liste des trajets si la course n'existe pas
+        }
 
         // Créer une nouvelle réservation
         Reservation reservation = new Reservation();
@@ -61,5 +78,6 @@ public class ReservationController {
         model.addAttribute("reservation", reservation);
         return "reservation-history"; // Vue de confirmation
     }
+
 }
 
