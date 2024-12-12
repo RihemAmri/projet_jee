@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservation History - Driver</title>
+  <!-- Include Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/navbar.css" rel="stylesheet">
+  <script>
+    // JavaScript function to show a confirmation dialog
+    function confirmCancellation(event) {
+      const userConfirmed = confirm("Are you sure you want to cancel this reservation?");
+      if (!userConfirmed) {
+        // Prevent form submission if the user cancels
+        event.preventDefault();
+      }
+    }
+  </script>
+</head>
+<body>
+<!-- Include Navbar (if any) -->
+<div th:replace="~{fragments/navb :: navbar}"></div>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Driver Reservation History</h2>
+
+  <!-- Section for Past Reservations -->
+  <h3>Past Reservations</h3>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Passenger Name</th>
+      <th>Ride</th>
+      <th>Seats Reserved</th>
+      <th>Total Price</th>
+      <th>Departure Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Displaying past reservations -->
+    <tr th:each="reservation : ${pastReservations}">
+      <td th:text="${reservation.passenger.firstName + ' ' + reservation.passenger.lastName}"></td>
+      <td th:text="${reservation.ride.departurePoint} + ' to ' + ${reservation.ride.destination}"></td>
+      <td th:text="${reservation.seatsReserved}"></td>
+      <td th:text="${reservation.totalPrice}"></td>
+      <td th:text="${#dates.format(reservation.ride.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Section for Upcoming Reservations -->
+  <h3 class="mt-5">Upcoming Reservations</h3>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Passenger Name</th>
+      <th>Ride</th>
+      <th>Seats Reserved</th>
+      <th>Total Price</th>
+      <th>Departure Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Displaying upcoming reservations -->
+    <tr th:each="reservation : ${upcomingReservations}">
+      <td th:text="${reservation.passenger.firstName + ' ' + reservation.passenger.lastName}"></td>
+      <td th:text="${reservation.ride.departurePoint} + ' to ' + ${reservation.ride.destination}"></td>
+      <td th:text="${reservation.seatsReserved}"></td>
+      <td th:text="${reservation.totalPrice}"></td>
+      <td th:text="${#dates.format(reservation.ride.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

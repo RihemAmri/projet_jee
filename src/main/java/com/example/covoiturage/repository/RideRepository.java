@@ -1,5 +1,6 @@
 package com.example.covoiturage.repository;
 
+import com.example.covoiturage.entity.AppUser;
 import com.example.covoiturage.entity.Ride;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,5 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
     List<Ride> searchRides(String departurePoint, String destination, Date departureDate, Double maxPrice, String driverName);
     List<Ride> findByDriverId(Long driverId);
 
+    List<Ride> findByDriver(AppUser driver);
 }

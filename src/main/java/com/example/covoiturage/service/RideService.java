@@ -1,5 +1,6 @@
 package com.example.covoiturage.service;
 
+import com.example.covoiturage.entity.AppUser;
 import com.example.covoiturage.entity.Ride;
 
 import java.util.Date;
@@ -15,4 +16,9 @@ public interface RideService {
     void updateRide(Ride ride);
 
     void delete(Ride ride);
+
+
+
+
+    public List<Ride> findRidesByDriver(AppUser driver);
 }

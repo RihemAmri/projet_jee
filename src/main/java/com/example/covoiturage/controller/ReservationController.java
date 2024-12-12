@@ -177,6 +177,47 @@ public class ReservationController {
 
         return "redirect:/reservationhistory?success=Reservation cancelled";
     }
+    @GetMapping("/driver/reservationhistory")
+    public String viewDriverReservationHistory(HttpSession session, Model model) {
+        try {
+            // Vérifier si l'utilisateur est connecté
+            Long userId = (Long) session.getAttribute("id");
+            if (userId == null) {
+                return "redirect:/loginn"; // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+            }
+
+            // Récupérer l'utilisateur (le conducteur)
+            AppUser appUser = userService.findById(userId);
+            if (appUser == null) {
+                model.addAttribute("error", "User not found");
+                return "error"; // Afficher une page d'erreur si l'utilisateur n'existe pas
+            }
+
+            // Récupérer tous les trajets que l'utilisateur (le conducteur) a publiés
+            List<Ride> rides = rideService.findRidesByDriver(appUser);
+
+            // Diviser les réservations en passées et à venir pour chaque trajet
+            List<Reservation> pastReservations = rides.stream()
+                    .flatMap(ride -> ride.getReservations().stream()) // Récupérer les réservations liées à chaque trajet
+                    .filter(reservation -> reservation.getRide().getDepartureDate().before(new Date()))
+                    .collect(Collectors.toList());
+
+            List<Reservation> upcomingReservations = rides.stream()
+                    .flatMap(ride -> ride.getReservations().stream()) // Récupérer les réservations liées à chaque trajet
+                    .filter(reservation -> reservation.getRide().getDepartureDate().after(new Date()))
+                    .collect(Collectors.toList());
+
+            // Ajouter les réservations au modèle
+            model.addAttribute("pastReservations", pastReservations);
+            model.addAttribute("upcomingReservations", upcomingReservations);
+
+            return "driver-reservation-history"; // Vue pour l'historique des réservations du conducteur
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "An error occurred while fetching reservation history.");
+            return "error"; // Afficher une page d'erreur en cas de problème
+        }
+    }
 
 
 
