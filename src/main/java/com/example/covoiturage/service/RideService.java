@@ -21,4 +21,6 @@ public interface RideService {
 
 
     public List<Ride> findRidesByDriver(AppUser driver);
+    void deleteRideAndNotify(Long rideId);
+
 }
