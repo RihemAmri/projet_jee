@@ -174,30 +174,53 @@ public class ReservationController {
         }
     }
     @PostMapping("/cancel-reservation/{reservationId}")
-    public String cancelReservation(@PathVariable Long reservationId, HttpSession session) {
-        // Vérifier si l'utilisateur est connecté
-        Long userId = (Long) session.getAttribute("id");
-        if (userId == null) {
-            return "redirect:/loginn";
+    public String cancelReservation(@PathVariable Long reservationId, HttpSession session, Model model) {
+        try {
+            // Vérifier si l'utilisateur est connecté
+            Long userId = (Long) session.getAttribute("id");
+            if (userId == null) {
+                return "redirect:/loginn";
+            }
+
+            // Récupérer la réservation
+            Reservation reservation = reservationService.findById(reservationId);
+            if (reservation == null || !reservation.getPassenger().getId().equals(userId)) {
+                return "redirect:/reservationhistory?error=Unauthorized"; // Vérification de l'autorisation
+            }
+
+            // Récupérer la course associée et mettre à jour les places disponibles
+            Ride ride = reservation.getRide();
+            ride.setAvailableSeats(ride.getAvailableSeats() + reservation.getSeatsReserved());
+            rideService.saveRide(ride);
+
+            // Supprimer la réservation
+            reservationService.deleteReservation(reservationId);
+
+            // Envoyer un email au conducteur
+            String driverEmail = ride.getDriver().getEmail(); // S'assurer que le conducteur est bien associé à la course
+            String driverSubject = "Reservation Canceled";
+            String driverText = "The passenger " + reservation.getPassenger().getFirstName() + " " + reservation.getPassenger().getLastName()
+                    + " has canceled their reservation for the ride \"" + ride.getDeparturePoint() + " - " + ride.getDestination()
+                    + "\". Number of seats canceled: " + reservation.getSeatsReserved() + ".";
+
+            emailService.sendConfirmationEmail(driverEmail, driverSubject, driverText);
+
+            // Envoyer un email au passager
+            String passengerEmail = reservation.getPassenger().getEmail();
+            String passengerSubject = "Reservation Canceled Successfully";
+            String passengerText = "Your reservation for the ride \"" + ride.getDeparturePoint() + " - " + ride.getDestination()
+                    + "\" has been successfully canceled. Number of seats canceled: " + reservation.getSeatsReserved() + ".";
+
+            emailService.sendConfirmationEmail(passengerEmail, passengerSubject, passengerText);
+
+            return "redirect:/reservationhistory?success=Reservation canceled";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "An error occurred while canceling the reservation.");
+            return "error"; // Afficher une page d'erreur en cas de problème
         }
-
-        // Récupérer la réservation
-        Reservation reservation = reservationService.findById(reservationId);
-
-        if (reservation == null || !reservation.getPassenger().getId().equals(userId)) {
-            return "redirect:/reservationhistory?error=Unauthorized"; // Vérification de l'autorisation
-        }
-
-        // Récupérer la course associée et mettre à jour les places disponibles
-        Ride ride = reservation.getRide();
-        ride.setAvailableSeats(ride.getAvailableSeats() + reservation.getSeatsReserved());
-        rideService.saveRide(ride);
-
-        // Supprimer la réservation
-        reservationService.deleteReservation(reservationId);
-
-        return "redirect:/reservationhistory?success=Reservation cancelled";
     }
+
     @GetMapping("/driver/reservationhistory")
     public String viewDriverReservationHistory(HttpSession session, Model model) {
         try {
