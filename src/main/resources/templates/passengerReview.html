@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratings and Reviews</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="/css/navbar.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            height: auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+            margin: 50px auto;
+        }
+        h3, h4 {
+            text-align: center;
+            color: #5e4dbb;
+            margin-bottom: 20px;
+        }
+        .rating-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .rating-row label {
+            flex: 1;
+            font-size: 14px;
+        }
+        .input-rating {
+            width: 60px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 5px;
+            text-align: center;
+        }
+        .progress-bar {
+            background: linear-gradient(to right, #ff6f61, #7dcef4);
+            height: 8px;
+            border-radius: 5px;
+        }
+        progress {
+            flex: 3;
+            appearance: none;
+            width: 100%;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        progress::-webkit-progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 5px;
+        }
+        progress::-webkit-progress-value {
+            background: linear-gradient(to right, #FF8C00, #FFD700);
+            border-radius: 5px;
+        }
+        .stars {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .star {
+            font-size: 30px;
+            color: #FFD700;
+        }
+        .average {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 10px;
+            color: #333;
+        }
+        .comment-section {
+            margin-top: 20px;
+        }
+        .comment-section textarea {
+            width: 100%;
+            height: 120px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navb :: navbar}"></div>
+<div class="container">
+    <h3>Ratings and Reviews</h3>
+    <div class="rating-container" id="rating-container">
+        <!-- Driver Rating Section -->
+        <div class="average" id="average">
+            Moyenne : 0/5
+        </div>
+        <div class="stars" id="stars">
+            <!-- Stars will be displayed here -->
+        </div>
+        <div class="rating-row">
+            <label for="punctuality">Punctuality</label>
+            <input type="number" id="punctuality" class="form-control input-rating" min="0" max="5" step="0.1" value="0" oninput="updateRatings()">
+            <progress id="progress-punctuality" max="5" value="0"></progress>
+        </div>
+        <div class="rating-row">
+            <label for="driving">Driving Skill</label>
+            <input type="number" id="driving" class="form-control input-rating" min="0" max="5" step="0.1" value="0" oninput="updateRatings()">
+            <progress id="progress-driving" max="5" value="0"></progress>
+        </div>
+        <div class="rating-row">
+            <label for="friendliness">Friendliness</label>
+            <input type="number" id="friendliness" class="form-control input-rating" min="0" max="5" step="0.1" value="0" oninput="updateRatings()">
+            <progress id="progress-friendliness" max="5" value="0"></progress>
+        </div>
+
+        <!-- Comment Section -->
+        <div class="comment-section">
+            <label for="comment">Your Comment</label>
+            <textarea id="comment" class="form-control" placeholder="Write a comment about the driver..."></textarea>
+        </div>
+
+        <button class="btn btn-primary mt-3" onclick="submitReview()">Submit Review</button>
+    </div>
+</div>
+
+<script>
+    function updateRatings() {
+        const punctuality = parseFloat(document.getElementById('punctuality').value) || 0;
+        const driving = parseFloat(document.getElementById('driving').value) || 0;
+        const friendliness = parseFloat(document.getElementById('friendliness').value) || 0;
+
+        // Update progress bars
+        document.getElementById('progress-punctuality').value = punctuality;
+        document.getElementById('progress-driving').value = driving;
+        document.getElementById('progress-friendliness').value = friendliness;
+
+        // Calculate average
+        const average = ((punctuality + driving + friendliness) / 3).toFixed(1);
+
+        // Update average display
+        document.getElementById('average').innerText = `Moyenne : ${average}/5`;
+
+        // Update stars
+        const starsContainer = document.getElementById('stars');
+        starsContainer.innerHTML = '';
+
+        const starCount = Math.round(average);
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('span');
+            star.className = 'star';
+            star.innerHTML = '★';
+            starsContainer.appendChild(star);
+        }
+
+        // Fill empty stars for a total of 5 stars
+        for (let i = starCount; i < 5; i++) {
+            const star = document.createElement('span');
+            star.className = 'star';
+            star.style.color = '#e0e0e0'; // Gray for empty stars
+            star.innerHTML = '★';
+            starsContainer.appendChild(star);
+        }
+    }
+
+    function submitReview() {
+        const punctuality = parseFloat(document.getElementById('punctuality').value) || 0;
+        const driving = parseFloat(document.getElementById('driving').value) || 0;
+        const friendliness = parseFloat(document.getElementById('friendliness').value) || 0;
+        const comment = document.getElementById('comment').value;
+
+        // Here you would send the data to your server to save the review
+        console.log('Review Submitted:', {
+            punctuality,
+            driving,
+            friendliness,
+            comment
+        });
+
+        // You can reset the form or display a success message after submitting
+        alert('Thank you for your review!');
+        document.getElementById('rating-container').reset();
+    }
+</script>
+</body>
+</html>

@@ -1,44 +1,38 @@
 package com.example.covoiturage.entity;
 
-
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
 public class Review {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private ReviewId reviewId; // Clé composée de la classe ReviewId
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private AppUser reviewer; // Utilisateur qui laisse l'évaluation
+    @JoinColumn(name = "rideId", referencedColumnName = "id", insertable = false, updatable = false)
+    private Ride ride; // Lien avec l'entité Ride
 
     @ManyToOne
-    @JoinColumn(name = "ride_id", nullable = false)
-    private Ride ride; // Trajet associé à l'évaluation
+    @JoinColumn(name = "passengerId", referencedColumnName = "id", insertable = false, updatable = false)
+    private AppUser passenger; // Lien avec l'entité AppUser (passager)
 
-    @Column(nullable = false)
-    private int rating; // Note de l'évaluation (par exemple, de 1 à 5)
+    @ManyToOne
+    @JoinColumn(name = "driverId", referencedColumnName = "id", insertable = false, updatable = false)
+    private AppUser driver; // Lien avec l'entité AppUser (conducteur)
 
-    @Column
-    private String comment; // Commentaire sur le trajet
+    private Double ratingDriver; // Note du conducteur
+    private String commentDriver;
+    private Double ratingPassenger; // Note du conducteur
+    private String commentPassenger;// Commentaire du conducteur
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
+    // Getters et Setters
+    public ReviewId getReviewId() {
+        return reviewId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public AppUser getReviewer() {
-        return reviewer;
-    }
-
-    public void setReviewer(AppUser reviewer) {
-        this.reviewer = reviewer;
+    public void setReviewId(ReviewId reviewId) {
+        this.reviewId = reviewId;
     }
 
     public Ride getRide() {
@@ -49,19 +43,51 @@ public class Review {
         this.ride = ride;
     }
 
-    public int getRating() {
-        return rating;
+    public AppUser getPassenger() {
+        return passenger;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setPassenger(AppUser passenger) {
+        this.passenger = passenger;
     }
 
-    public String getComment() {
-        return comment;
+    public AppUser getDriver() {
+        return driver;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDriver(AppUser driver) {
+        this.driver = driver;
+    }
+
+    public Double getRatingDriver() {
+        return ratingDriver;
+    }
+
+    public void setRatingDriver(Double ratingDriver) {
+        this.ratingDriver = ratingDriver;
+    }
+
+    public String getCommentDriver() {
+        return commentDriver;
+    }
+
+    public void setCommentDriver(String commentDriver) {
+        this.commentDriver = commentDriver;
+    }
+
+    public Double getRatingPassenger() {
+        return ratingPassenger;
+    }
+
+    public void setRatingPassenger(Double ratingPassenger) {
+        this.ratingPassenger = ratingPassenger;
+    }
+
+    public String getCommentPassenger() {
+        return commentPassenger;
+    }
+
+    public void setCommentPassenger(String commentPassenger) {
+        this.commentPassenger = commentPassenger;
     }
 }

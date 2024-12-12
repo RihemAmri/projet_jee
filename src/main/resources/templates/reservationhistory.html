@@ -65,6 +65,7 @@
             <th>Departure Date</th>
             <th>Seats Reserved</th>
             <th>Total Price</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -75,6 +76,9 @@
             <td th:text="${#dates.format(reservation.ride.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${reservation.seatsReserved}"></td>
             <td th:text="${reservation.totalPrice}"></td>
+            <td style="white-space: nowrap">
+                <a class="btn btn-primary btn-sm" th:href="@{/ratedriver/{id}(id=${reservation.ride.id})}">Rate</a>
+            </td>
         </tr>
         </tbody>
     </table>

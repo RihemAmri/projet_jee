@@ -63,6 +63,7 @@ public class ReservationController {
                 // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
                 return "redirect:/loginn";
             }
+            System.out.println(userId);
 
             // Récupérer le trajet
             Ride ride = rideService.findRideById(rideId);
