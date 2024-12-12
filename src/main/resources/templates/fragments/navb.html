@@ -18,7 +18,12 @@
             <!-- Affichage conditionnel pour les Conducteurs -->
             <li class="nav-item" th:if="${session.role == 'driver'}">
 
-              <a class="nav-link" href="/addrides">Proposer un trajet</a>
+              <a class="nav-link" href="/addrides">Offer a Ride</a>
+            </li>
+
+            <!-- Page d'historique des réservations pour le conducteur -->
+            <li class="nav-item" th:if="${session.role == 'driver'}">
+              <a class="nav-link" href="/driver/reservationhistory">Driver Reservation History</a>
             </li>
 
             <li class="nav-item" th:if="${session.role == 'passenger'}">

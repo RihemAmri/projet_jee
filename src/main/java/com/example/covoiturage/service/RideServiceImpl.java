@@ -1,5 +1,6 @@
 package com.example.covoiturage.service;
 
+import com.example.covoiturage.entity.AppUser;
 import com.example.covoiturage.entity.Ride;
 import com.example.covoiturage.repository.RideRepository;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,9 @@ public class RideServiceImpl implements RideService {
 
 
 
+    public List<Ride> findRidesByDriver(AppUser driver) {
+        return rideRepository.findByDriver(driver); // Méthode qui retourne les trajets d'un conducteur
+    }
 
 
 }

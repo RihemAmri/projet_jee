@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Ride {
@@ -107,4 +108,12 @@ public class Ride {
     public void setRestrictions(String restrictions) {
         this.restrictions = restrictions;
     }
+
+    @OneToMany(mappedBy = "ride")
+    private List<Reservation> reservations;
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
 }
