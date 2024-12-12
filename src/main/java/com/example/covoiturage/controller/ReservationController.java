@@ -3,6 +3,7 @@ package com.example.covoiturage.controller;
 import com.example.covoiturage.entity.AppUser;
 import com.example.covoiturage.entity.Ride;
 import com.example.covoiturage.entity.Reservation;
+import com.example.covoiturage.service.EmailService;
 import com.example.covoiturage.service.RideService;
 import com.example.covoiturage.service.ReservationService;
 import com.example.covoiturage.service.UserServiceImpl;
@@ -32,6 +33,10 @@ public class ReservationController {
     @Autowired
     private UserServiceImpl userService;
 
+    @Autowired
+    private EmailService emailService; // Inject the EmailService
+
+
     @GetMapping("/book-ride/{rideId}")
     public String showBookingForm(@PathVariable Long rideId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         // Vérifier si l'utilisateur est connecté
@@ -56,63 +61,79 @@ public class ReservationController {
     @PostMapping("/book-ride/{rideId}")
     public String bookRide(@PathVariable Long rideId, int numberOfSeats, HttpSession session, Model model) {
         try {
-            // Vérifier si l'utilisateur est connecté en récupérant l'ID de l'utilisateur dans la session
             Long userId = (Long) session.getAttribute("id");
+            System.out.println("User ID in session: " + userId); // Vérifiez si l'ID est null ou valide
 
             if (userId == null) {
-                // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+                System.out.println("User is not logged in. Redirecting to login.");
                 return "redirect:/loginn";
             }
 
-            // Récupérer le trajet
+            // Retrieve the ride
             Ride ride = rideService.findRideById(rideId);
 
             if (ride == null) {
                 model.addAttribute("error", "Ride not found");
-                return "rides"; // Retourner à la liste des trajets si la course n'existe pas
+                return "rides"; // Return to the list of rides if the ride does not exist
             }
 
-            // Vérifier s'il y a suffisamment de places disponibles
+            // Check if there are enough available seats
             if (ride.getAvailableSeats() < numberOfSeats) {
                 model.addAttribute("error", "Not enough available seats.");
-                return "rides"; // Retourner à la liste des trajets si pas assez de places
+                return "rides"; // Return to the list of rides if there aren't enough seats
             }
 
-            // Récupérer l'utilisateur avec l'ID récupéré de la session
-            AppUser appUser = userService.findById(userId); // Trouver l'utilisateur par son ID
+            // Retrieve the user by their ID from the session
+            AppUser appUser = userService.findById(userId);
 
             if (appUser == null) {
                 model.addAttribute("error", "User not found");
-                return "rides"; // Retourner à la liste des trajets si l'utilisateur n'est pas trouvé
+                return "rides"; // Return to the list of rides if the user is not found
             }
 
-            // Créer une nouvelle réservation
+            // Create a new reservation
             Reservation reservation = new Reservation();
             reservation.setRide(ride);
             reservation.setSeatsReserved(numberOfSeats);
-            reservation.setPassenger(appUser); // Associer l'utilisateur à la réservation
+            reservation.setPassenger(appUser); // Associate the user with the reservation
 
-            // Calculer le prix total
+            // Calculate the total price
             reservation.calculateTotalPrice();
 
-            // Sauvegarder la réservation
+            // Save the reservation
             reservationService.saveReservation(reservation);
 
-            // Mettre à jour le nombre de places disponibles dans la course
+            // Update the available seats for the ride
             ride.setAvailableSeats(ride.getAvailableSeats() - numberOfSeats);
 
-            // Sauvegarder la course mise à jour
+            // Save the updated ride
             rideService.saveRide(ride);
 
-            // Passer les informations de réservation à la vue
+            // Send email notifications
+
+            // 1. Send a confirmation email to the passenger
+            String passengerEmail = appUser.getEmail();
+            String passengerSubject = "Reservation Confirmed";
+            String passengerText = "Your reservation for the ride \"" + ride.getDeparturePoint() + " - " + ride.getDestination() + "\" has been confirmed. Number of seats reserved: " + numberOfSeats + ".";
+
+            emailService.sendConfirmationEmail(passengerEmail, passengerSubject, passengerText);
+
+            // 2. Send an email to the driver
+            String driverEmail = ride.getDriver().getEmail(); // Ensure you have the correct reference to the driver in the Ride object
+            String driverSubject = "New Reservation";
+            String driverText = "You have a new reservation for the ride \"" + ride.getDeparturePoint() + " - " + ride.getDestination() + "\". Passenger: " + appUser.getFirstName() + " " + appUser.getLastName() + ". Number of seats reserved: " + numberOfSeats + ".";
+            emailService.sendConfirmationEmail(driverEmail, driverSubject, driverText);
+
+            // Pass the reservation information to the view
             model.addAttribute("reservation", reservation);
-            return "reservationhistory"; // Vue de confirmation
+            return "reservationhistory"; // Confirmation view
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "An error occurred while booking the ride.");
-            return "rides"; // Retourner à la liste des trajets en cas d'erreur
+            return "rides"; // Return to the list of rides in case of an error
         }
     }
+
     @GetMapping("/reservationhistory")
     public String viewReservationHistory(HttpSession session, Model model) {
         try {
@@ -218,6 +239,16 @@ public class ReservationController {
             return "error"; // Afficher une page d'erreur en cas de problème
         }
     }
+    /*@GetMapping("/test-email")
+    public String testEmail() {
+        try {
+            emailService.sendConfirmationEmail("nadabentaher2003@gmail.com", "Test Email", "This is a test email.");
+            return "Email sent successfully.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Failed to send email. Error: " + e.getMessage();
+        }
+    }*/
 
 
 
