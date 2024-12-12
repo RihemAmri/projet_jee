@@ -15,4 +15,13 @@ public class ReservationServiceImpl implements ReservationService {
     public void saveReservation(Reservation reservation) {
         reservationRepository.save(reservation); // Utilise le repository pour sauvegarder la réservation
     }
+    public void deleteReservation(Long id) {
+        reservationRepository.deleteById(id);
+    }
+    @Override
+    public Reservation findById(Long id) {
+        return reservationRepository.findById(id)
+                .orElse(null); // Retourne null si aucune réservation n'est trouvée
+    }
+
 }

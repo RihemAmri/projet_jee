@@ -2,6 +2,8 @@ package com.example.covoiturage.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="user")
 public class AppUser {
@@ -87,4 +89,15 @@ public class AppUser {
     public void setRole(String role) {
         this.role = role;
     }
+    @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
 }
