@@ -190,11 +190,23 @@ public class RideController {
         return "redirect:/Myrides";
     }
 
-    @GetMapping("/rides/delete/{id}")
+    /*@GetMapping("/rides/delete/{id}")
     public String deleteRide(@PathVariable Long id) {
         Ride existingRide = rideService.findRideById(id);
         rideService.delete(existingRide);
         return "redirect:/Myrides"; // Redirige vers la liste des rides
+    }*/
+
+    @GetMapping("/rides/delete/{id}")
+    public String deleteRide(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            rideService.deleteRideAndNotify(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Ride deleted successfully, and notifications have been sent.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while deleting the ride: " + e.getMessage());
+        }
+        return "redirect:/Myrides";
     }
+
 }
 
