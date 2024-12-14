@@ -67,7 +67,7 @@ public class UserController {
             return "redirect:/loginn";
         }
     }
-    @GetMapping("/logout")
+    @GetMapping("/signout")
     public String logout(HttpSession session) {
         session.invalidate(); // Invalider la session à la déconnexion
         return "redirect:/";
