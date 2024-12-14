@@ -15,12 +15,12 @@
             margin: 0;
             padding: 0;
         }
-        .container {
+        .container1 {
             max-width: 700px;
             height: auto;
             background: #fff;
             border-radius: 16px;
-            padding: 20px;
+            padding: 10px;
             box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
             margin: 50px auto;
         }
@@ -96,99 +96,90 @@
 </head>
 <body>
 <div th:replace="~{fragments/navb :: navbar}"></div>
-<div class="container">
-    <h3>Ratings and Reviews</h3>
-    <div class="rating-container" id="rating-container">
-        <!-- Driver Rating Section -->
-        <div class="average" id="average">
-            Moyenne : 0/5
-        </div>
-        <div class="stars" id="stars">
-            <!-- Stars will be displayed here -->
-        </div>
-        <div class="rating-row">
-            <label for="punctuality">Punctuality</label>
-            <input type="number" id="punctuality" class="form-control input-rating" min="0" max="5" step="0.1" value="0" oninput="updateRatings()">
-            <progress id="progress-punctuality" max="5" value="0"></progress>
-        </div>
-        <div class="rating-row">
-            <label for="driving">Driving Skill</label>
-            <input type="number" id="driving" class="form-control input-rating" min="0" max="5" step="0.1" value="0" oninput="updateRatings()">
-            <progress id="progress-driving" max="5" value="0"></progress>
-        </div>
-        <div class="rating-row">
-            <label for="friendliness">Friendliness</label>
-            <input type="number" id="friendliness" class="form-control input-rating" min="0" max="5" step="0.1" value="0" oninput="updateRatings()">
-            <progress id="progress-friendliness" max="5" value="0"></progress>
-        </div>
+<form th:action="@{/ratepassenger}" method="post">
+    <div class="container1">
+        <h3>Ratings and Reviews</h3>
+        <div class="rating-container" id="rating-container">
+            <input type="hidden" name="reservationId" th:value="${reservationId}" />
+            <!-- Affichage de la moyenne -->
+            <div class="average" id="average">Moyenne : 0/5</div>
 
-        <!-- Comment Section -->
-        <div class="comment-section">
-            <label for="comment">Your Comment</label>
-            <textarea id="comment" class="form-control" placeholder="Write a comment about the driver..."></textarea>
-        </div>
+            <!-- Affichage des étoiles -->
+            <div class="stars" id="stars"></div>
 
-        <button class="btn btn-primary mt-3" onclick="submitReview()">Submit Review</button>
+            <!-- Champs de saisie pour les notes -->
+            <div class="rating-row">
+                <label for="punctuality">Punctuality</label>
+                <input type="number" id="punctuality" name="punctuality" class="form-control input-rating" min="0" max="5" step="0.1" value="0" oninput="updateRatings()">
+                <progress id="progress-punctuality" max="5" value="0"></progress>
+            </div>
+            <div class="rating-row">
+                <label for="driving">Behavior</label>
+                <input type="number" id="driving" name="driving" class="form-control input-rating" min="0" max="5" step="0.1" value="0" oninput="updateRatings()">
+                <progress id="progress-driving" max="5" value="0"></progress>
+            </div>
+            <div class="rating-row">
+                <label for="friendliness">Friendliness</label>
+                <input type="number" id="friendliness" name="friendliness" class="form-control input-rating" min="0" max="5" step="0.1" value="0" oninput="updateRatings()">
+                <progress id="progress-friendliness" max="5" value="0"></progress>
+            </div>
+
+            <!-- Champ caché pour la moyenne calculée -->
+            <input type="hidden" id="ratingPassenger" name="ratingPassenger" value="0">
+
+            <!-- Section de commentaire -->
+            <div class="comment-section">
+                <label for="comment">Your Comment</label>
+                <textarea id="comment" name="commentPassenger" class="form-control"  nplaceholder="Write a comment about the driver..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Submit Review</button>
+        </div>
     </div>
-</div>
+</form>
 
 <script>
     function updateRatings() {
+        // Récupérer les valeurs des champs de saisie
         const punctuality = parseFloat(document.getElementById('punctuality').value) || 0;
         const driving = parseFloat(document.getElementById('driving').value) || 0;
         const friendliness = parseFloat(document.getElementById('friendliness').value) || 0;
 
-        // Update progress bars
+        // Mettre à jour les barres de progression
         document.getElementById('progress-punctuality').value = punctuality;
         document.getElementById('progress-driving').value = driving;
         document.getElementById('progress-friendliness').value = friendliness;
 
-        // Calculate average
+        // Calculer la moyenne des trois critères
         const average = ((punctuality + driving + friendliness) / 3).toFixed(1);
 
-        // Update average display
+        // Mettre à jour l'affichage de la moyenne
         document.getElementById('average').innerText = `Moyenne : ${average}/5`;
 
-        // Update stars
+        // Mettre à jour les étoiles
         const starsContainer = document.getElementById('stars');
-        starsContainer.innerHTML = '';
-
+        starsContainer.innerHTML = '';  // Vider le contenu actuel des étoiles
         const starCount = Math.round(average);
         for (let i = 0; i < starCount; i++) {
             const star = document.createElement('span');
             star.className = 'star';
-            star.innerHTML = '★';
+            star.innerHTML = '★';  // Ajout d'une étoile pleine
             starsContainer.appendChild(star);
         }
 
-        // Fill empty stars for a total of 5 stars
+        // Compléter avec des étoiles vides pour un total de 5 étoiles
         for (let i = starCount; i < 5; i++) {
             const star = document.createElement('span');
             star.className = 'star';
-            star.style.color = '#e0e0e0'; // Gray for empty stars
+            star.style.color = '#e0e0e0';  // Gris pour les étoiles vides
             star.innerHTML = '★';
             starsContainer.appendChild(star);
         }
+
+        // Mettre la moyenne dans le champ caché pour l'envoyer au backend
+        document.getElementById('ratingPassenger').value = average;
     }
 
-    function submitReview() {
-        const punctuality = parseFloat(document.getElementById('punctuality').value) || 0;
-        const driving = parseFloat(document.getElementById('driving').value) || 0;
-        const friendliness = parseFloat(document.getElementById('friendliness').value) || 0;
-        const comment = document.getElementById('comment').value;
-
-        // Here you would send the data to your server to save the review
-        console.log('Review Submitted:', {
-            punctuality,
-            driving,
-            friendliness,
-            comment
-        });
-
-        // You can reset the form or display a success message after submitting
-        alert('Thank you for your review!');
-        document.getElementById('rating-container').reset();
-    }
 </script>
 </body>
 </html>

@@ -45,6 +45,9 @@
       <td th:text="${reservation.seatsReserved}"></td>
       <td th:text="${reservation.totalPrice}"></td>
       <td th:text="${#dates.format(reservation.ride.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
+      <td style="white-space: nowrap">
+        <a class="btn btn-primary btn-sm" th:href="@{/ratepassenger/{id}(id=${reservation.id})}">Rate</a>
+      </td>
     </tr>
     </tbody>
   </table>
@@ -69,6 +72,7 @@
       <td th:text="${reservation.seatsReserved}"></td>
       <td th:text="${reservation.totalPrice}"></td>
       <td th:text="${#dates.format(reservation.ride.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
+
     </tr>
     </tbody>
   </table>

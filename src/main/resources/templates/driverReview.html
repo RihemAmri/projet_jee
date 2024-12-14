@@ -15,12 +15,12 @@
             margin: 0;
             padding: 0;
         }
-        .container {
+        .container1 {
             max-width: 700px;
             height: auto;
             background: #fff;
             border-radius: 16px;
-            padding: 20px;
+            padding: 10px;
             box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
             margin: 50px auto;
         }
@@ -97,7 +97,7 @@
 <body>
 <div th:replace="~{fragments/navb :: navbar}"></div>
 <form th:action="@{/ratedriver}" method="post">
-    <div class="container">
+    <div class="container1">
         <h3>Ratings and Reviews</h3>
         <div class="rating-container" id="rating-container">
             <input type="hidden" name="rideId" th:value="${rideId}" />
@@ -125,7 +125,7 @@
             </div>
 
             <!-- Champ caché pour la moyenne calculée -->
-            <input type="text" id="ratingDriver" name="ratingDriver" value="0">
+            <input type="hidden" id="ratingDriver" name="ratingDriver" value="0">
 
             <!-- Section de commentaire -->
             <div class="comment-section">
