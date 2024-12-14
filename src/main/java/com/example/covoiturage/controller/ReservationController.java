@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
 import java.util.List;
@@ -59,7 +60,7 @@ public class ReservationController {
 
 
     @PostMapping("/book-ride/{rideId}")
-    public String bookRide(@PathVariable Long rideId, int numberOfSeats, HttpSession session, Model model) {
+    public String bookRide(@PathVariable Long rideId, int numberOfSeats, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         try {
             Long userId = (Long) session.getAttribute("id");
             System.out.println("User ID in session: " + userId); // Vérifiez si l'ID est null ou valide
@@ -126,8 +127,9 @@ public class ReservationController {
             emailService.sendConfirmationEmail(driverEmail, driverSubject, driverText);
 
             // Pass the reservation information to the view
-            model.addAttribute("reservation", reservation);
-            return "reservationhistory"; // Confirmation view
+            //model.addAttribute("reservation", reservation);
+            redirectAttributes.addFlashAttribute("success", "Your reservation has been successfully completed!");
+            return "redirect:/reservationhistory"; // Confirmation view
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "An error occurred while booking the ride.");
