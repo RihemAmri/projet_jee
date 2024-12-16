@@ -1,19 +1,21 @@
 package com.example.covoiturage.service;
 import com.example.covoiturage.entity.AppUser;
+import com.example.covoiturage.entity.Review;
 import com.example.covoiturage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserDetailsService{
+public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
     public AppUser findById(Long id) {
         return userRepository.findById(id).orElse(null); // Retourne null si l'utilisateur n'est pas trouvé
     }
@@ -36,6 +38,20 @@ public class UserServiceImpl implements UserDetailsService{
                 .password(appuser.getPassword())
                 .roles(appuser.getRole().toUpperCase()) // Ensure role is uppercase
                 .build();
+    }
+
+
+    @Override
+    public void updateUser(AppUser user) {
+        Optional<AppUser> existingUser = userRepository.findById(user.getId());
+        if (existingUser.isPresent()) {
+            AppUser updatedUser = existingUser.get();
+            updatedUser.setFirstName(user.getFirstName());
+            updatedUser.setLastName(user.getLastName());
+            updatedUser.setEmail(user.getEmail());
+            updatedUser.setPhoneNumber(user.getPhoneNumber());
+            userRepository.save(updatedUser);
+        }
     }
 
 }

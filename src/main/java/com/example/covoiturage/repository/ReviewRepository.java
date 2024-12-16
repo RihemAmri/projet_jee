@@ -14,4 +14,12 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r WHERE r.reviewId = :reviewId")
     Optional<Review> findById(@Param("reviewId") ReviewId reviewId);
+    List<Review> findByReviewId_PassengerId(Long passengerId);
+
+
+    // Recherche de Reviews par rideId à partir de la clé composite
+    List<Review> findByReviewId_RideId(Long rideId);
+
+    // Recherche de Reviews par driverId à partir de la clé composite
+    List<Review> findByReviewId_DriverId(Long driverId);
 }

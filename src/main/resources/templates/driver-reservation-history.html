@@ -40,7 +40,11 @@
     <tbody>
     <!-- Displaying past reservations -->
     <tr th:each="reservation : ${pastReservations}">
-      <td th:text="${reservation.passenger.firstName + ' ' + reservation.passenger.lastName}"></td>
+      <td>
+        <a th:href="@{/profilePass/{id}(id=${reservation.passenger.id})}">
+          <span th:text="${reservation.passenger.firstName + ' ' + reservation.passenger.lastName}"></span>
+        </a>
+      </td>
       <td th:text="${reservation.ride.departurePoint} + ' to ' + ${reservation.ride.destination}"></td>
       <td th:text="${reservation.seatsReserved}"></td>
       <td th:text="${reservation.totalPrice}"></td>

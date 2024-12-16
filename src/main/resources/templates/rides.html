@@ -120,7 +120,13 @@
                         <div class="ride-details">
                             <p><i class="bi bi-clock text-secondary"></i> Departure: <span th:text="${ride.departureDate}">2024-12-05 09:00 AM</span></p>
                             <p><i class="bi bi-calendar text-secondary"></i> Date: <span th:text="${ride.departureDate}">2024-12-05</span></p>
-                            <p><i class="bi bi-person text-secondary"></i> Driver: <span th:text="${ride.driver.firstName}">John Doe</span></p>
+                            <p>
+                                <i class="bi bi-person text-secondary"></i>
+                                Driver:
+                                <a th:href="@{/profileDriver/{id}(id=${ride.driver.id})}" class="text-decoration-none">
+                                    <span th:text="${ride.driver.firstName}">John Doe</span>
+                                </a>
+                            </p>
                         </div>
                     </div>
                     <div class="text-end">

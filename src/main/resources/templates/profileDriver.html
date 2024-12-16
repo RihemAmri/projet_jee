@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil du Passager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> <!-- Bootstrap Icons -->
+    <link href="/css/navbar.css" rel="stylesheet">
+    <style>
+        .profile-container {
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .profile-card {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            color: #777;
+        }
+
+        .profile-info {
+            margin-top: 20px;
+        }
+
+        .profile-info .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .profile-info label {
+            font-weight: bold;
+        }
+
+        .profile-info input, .profile-info p {
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .form-group i {
+            margin-right: 10px;
+            color:#ff7043 ; /* Couleur des icônes #007bff*/
+        }
+
+        .stars {
+            display: inline-block;
+        }
+
+        .star {
+            color: #e0e0e0;  /* Gris pour les étoiles vides */
+            font-size: 1.5rem;
+        }
+
+        .star.filled {
+            color: #ffcc00;  /* Jaune pour les étoiles remplies */
+        }
+
+        .star.empty {
+            color: #e0e0e0; /* Gris pour les étoiles vides */
+        }
+        .ev{
+            margin-right: 420px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navb :: navbar}"></div>
+
+<div class="profile-container">
+    <div class="profile-card">
+
+        <img th:src="@{/images/photoprofil.png}" alt="photo" style="width:200px;">
+
+        <div class="profile-info">
+            <form>
+                <div class="form-group">
+                    <label for="firstName"><i class="bi bi-person-fill"></i> FirstName</label>
+                    <input type="text" class="form-control" id="firstName" th:value="${user.firstName}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="lastName"><i class="bi bi-person-lines-fill"></i>LastName</label>
+                    <input type="text" class="form-control" id="lastName" th:value="${user.lastName}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="email"><i class="bi bi-envelope-fill"></i> Email</label>
+                    <input type="email" class="form-control" id="email" th:value="${user.email}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="phone"><i class="bi bi-telephone-fill"></i>PhoneNumber</label>
+                    <input type="tel" class="form-control" id="phone" th:value="${user.phoneNumber}" disabled>
+                </div>
+                <div class="ev">
+                    <div><label >Rate</label></div>
+
+
+                    <div class="stars">
+                        <!-- Itérer sur la liste des évaluations -->
+                        <div th:each="rating : ${ratingDriver}">
+                            <div class="stars">
+            <span th:each="i : ${#numbers.sequence(1, 5)}"
+                  th:classappend="${i <= rating ? ' filled' : ' empty'}"
+                  class="star">&#9733;</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+                        .stars {
+
+                        }
+
+                        .star {
+                            font-size: 1.5rem; /* Taille des étoiles */
+                            color: #e0e0e0;  /* Gris pour les étoiles vides */
+                        }
+
+                        .star.filled {
+                            color: #ff7043;  /* Jaune pour les étoiles remplies */
+                        }
+
+                        .star.empty {
+                            color: #e0e0e0;  /* Gris pour les étoiles vides */
+                        }
+                    </style>
+
+                </div>
+            </form>
+            <div th:if="${session.role == 'driver'}">
+                <button type="button" class="btn btn-primary w-100 mt-3"
+                        th:onclick="'location.href=\'/editprofile/' + ${user.id} + '\''">
+                    Modifier le Profil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

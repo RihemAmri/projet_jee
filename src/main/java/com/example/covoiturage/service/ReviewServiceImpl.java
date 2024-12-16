@@ -23,4 +23,18 @@ public class ReviewServiceImpl implements ReviewService {
         // Vérification ou logique métier si nécessaire
         reviewRepository.save(review);
     }
+    @Override
+    public List<Review> findReviewsByUserId(Long passengerId) {
+        // Utiliser l'ID du passager pour récupérer ses évaluations
+        return reviewRepository.findByReviewId_PassengerId(passengerId);
+    }
+    @Override
+    public List<Review> findReviewsBydriver(Long driverId) {
+        // Utiliser l'ID du passager pour récupérer ses évaluations
+        return reviewRepository.findByReviewId_DriverId(driverId);
+    }
+
+
+
+
 }
