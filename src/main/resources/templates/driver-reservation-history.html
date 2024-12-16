@@ -53,6 +53,9 @@
         <a class="btn btn-primary btn-sm" th:href="@{/ratepassenger/{id}(id=${reservation.id})}">Rate</a>
       </td>
     </tr>
+    <tr th:if="${#lists.isEmpty(pastReservations)}">
+      <td colspan="5" class="text-center">No past reservations</td>
+    </tr>
     </tbody>
   </table>
 
@@ -77,6 +80,9 @@
       <td th:text="${reservation.totalPrice}"></td>
       <td th:text="${#dates.format(reservation.ride.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
 
+    </tr>
+    <tr th:if="${#lists.isEmpty(upcomingReservations)}">
+      <td colspan="5" class="text-center">No upcoming reservations</td>
     </tr>
     </tbody>
   </table>

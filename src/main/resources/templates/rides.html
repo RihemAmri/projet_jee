@@ -43,6 +43,17 @@
             display: flex;
             flex-direction: row;
             align-items: center;
+            position: relative;
+            min-height: 150px;
+        }
+        .ride-card .ride-info {
+            flex: 1; /* Permet à la section info de prendre toute la largeur disponible */
+        }
+
+        .ride-card .text-end {
+            position: absolute;
+            bottom: 20px; /* Distance du bas de la carte */
+            right: 20px; /* Distance du côté droit */
         }
 
         .ride-card:hover {
@@ -112,7 +123,7 @@
     <div class="ride-results mt-4">
         <div class="row">
             <!-- Loop through rides -->
-            <div class="col-md-4" th:each="ride : ${rides}">
+            <div class="col-12 mb-3" th:each="ride : ${rides}">
                 <div class="ride-card shadow-sm">
                     <img src="/images/car_ride.png" alt="Vehicle Image">
                     <div class="ride-info">
@@ -127,6 +138,7 @@
                                     <span th:text="${ride.driver.firstName}">John Doe</span>
                                 </a>
                             </p>
+                            <p><i class="bi bi-cash text-secondary"></i>Price per seat: <span th:text="${ride.pricePerSeat}">20</span></p>
                         </div>
                     </div>
                     <div class="text-end">

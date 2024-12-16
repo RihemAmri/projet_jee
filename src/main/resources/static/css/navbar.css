@@ -22,23 +22,37 @@ nav .nav-link.active {
 }
 
 .btn-primary {
-    background-color: #ff7043; /* Couleur des boutons principaux */
-    color: white;
-    border: none;
-    outline: none;
+    background-color: #ff7043 !important; /* Couleur des boutons principaux */
+    color: white !important;
+    border: none !important;
+    outline: none !important;
 }
 
-.btn-primary:focus, .btn-primary:hover {
-    background-color: #ff7043;
-    color: white;
-}
+
 
 .btn-outline-primary {
-    border-color: #ff7043;
-    color: #ff7043;
+    border-color: #ff7043 !important;
+    color: #ff7043 !important;
 }
 
+/* Effet hover pour Sign In et Sign Up */
+.btn-primary:hover,
 .btn-outline-primary:hover {
-    background-color: #ff7043;
-    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important; /* Ajouter une ombre au survol */
+    transform: scale(1.05) !important; /* Optionnel : Légère augmentation de la taille */
+}
+
+.btn-primary:focus,
+.btn-outline-primary:focus {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important; /* Ombre au focus */
+    outline: none !important; /* Supprimer les bordures au focus */
+}
+
+/* Désactiver la couleur de fond par défaut sur hover pour btn-outline-primary */
+.btn-outline-primary:hover {
+    background-color: white !important; /* Reste blanc au survol */
+    color: #ff7043 !important; /* Conserve la couleur orange du texte */
+    border-color: #ff7043 !important; /* Conserve la bordure orange */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important; /* Ajouter une ombre */
+    transform: scale(1.05) !important; /* Optionnel : Légère augmentation de la taille */
 }
