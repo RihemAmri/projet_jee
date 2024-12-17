@@ -10,4 +10,5 @@ public interface ReviewService {
 
     List<Review> findReviewsByUserId(Long id);
     List<Review> findReviewsBydriver(Long driverId);
+    List<Review> getReviewsByRole(String role, Long sessionId);
 }

@@ -2,15 +2,20 @@ package com.example.covoiturage.controller;
 
 import com.example.covoiturage.entity.*;
 import com.example.covoiturage.repository.ReviewRepository;
+import com.example.covoiturage.repository.UserRepository;
 import com.example.covoiturage.service.ReservationService;
 import com.example.covoiturage.service.ReviewService;
 import com.example.covoiturage.service.RideService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -24,6 +29,8 @@ public class ReviewController {
     private ReservationService reservationService;
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private UserRepository  userRepository;
 
     // Méthode pour afficher le formulaire de notation (avec l'ID du trajet)
     @GetMapping("/ratedriver/{rideId}")
@@ -174,7 +181,52 @@ public class ReviewController {
         // Rediriger vers l'historique des réservations après soumission
         return "driver-reservation-history";
     }
+    @GetMapping("/Review")
+    public String getReviews(Model model, HttpSession session) {
+        System.out.println("linaaaa fi review");
 
+        // Récupérer les informations de session
+        Long sessionId = (Long) session.getAttribute("id");
+        System.out.println(sessionId);
+        String role = (String) session.getAttribute("role");
+
+        // Récupérer les reviews en fonction du rôle
+        List<Review> reviews = reviewService.getReviewsByRole(role, sessionId);
+
+        // Préparer les données simplifiées pour la vue
+        List<Map<String, Object>> reviewDetails = reviews.stream().map(review -> {
+            Map<String, Object> details = new HashMap<>();
+
+            // Ajouter les informations du review
+            if ("driver".equals(role)) {
+                details.put("name", userRepository.findById(review.getPassenger().getId())
+                        .map(AppUser::getFirstName)
+                        .orElse("Unknown"));
+                details.put("rating", review.getRatingDriver());
+                details.put("comment", review.getCommentDriver());
+            } else {
+                details.put("name", userRepository.findById(review.getDriver().getId())
+                        .map(AppUser::getFirstName)
+                        .orElse("Unknown"));
+                details.put("rating", review.getRatingPassenger());
+                details.put("comment", review.getCommentPassenger());
+            }
+
+            // Récupérer et ajouter les informations de la ride
+            details.put("rideId", review.getRide().getId());
+            details.put("departurePoint", review.getRide().getDeparturePoint());
+            details.put("destination", review.getRide().getDestination());
+            details.put("departureDate", review.getRide().getDepartureDate());
+
+            return details;
+        }).toList();
+
+        // Ajout des informations au modèle
+        model.addAttribute("role", role);
+        model.addAttribute("reviewDetails", reviewDetails);
+
+        return "Review";
+    }
 
 
 }
