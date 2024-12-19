@@ -1,8 +1,15 @@
 /* navbar.css - Styles globaux pour le navbar */
-nav .nav-link.active {
-    color: #ff7043 !important; /* Couleur active des liens */
-}
 
+/* Appliquer la couleur et la ligne sous le lien actif */
+nav .nav-link.active,
+nav .nav-link.active:hover {
+    color: #ff7043 !important; /* Couleur active des liens */
+    border-bottom: 2px solid #ff7043 !important; /* Ligne sous le lien actif */
+}
+.nav-link.active {
+    color: #ff7043 !important;  /* Change la couleur */
+    border-bottom: 2px solid #ff7043 !important;  /* Ajoute la ligne sous le lien actif */
+}
 .navbar-brand span {
     font-size: 24px;
     font-weight: bold;
@@ -27,8 +34,6 @@ nav .nav-link.active {
     border: none !important;
     outline: none !important;
 }
-
-
 
 .btn-outline-primary {
     border-color: #ff7043 !important;
@@ -55,4 +60,10 @@ nav .nav-link.active {
     border-color: #ff7043 !important; /* Conserve la bordure orange */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important; /* Ajouter une ombre */
     transform: scale(1.05) !important; /* Optionnel : Légère augmentation de la taille */
+}
+
+/* Effet de survol pour le lien */
+.navbar-nav .nav-link:hover {
+    color: #ff7043 !important;  /* Change la couleur du texte au survol */
+    border-bottom: 2px solid #ff7043 !important;  /* Ajoute une ligne sous le lien */
 }
