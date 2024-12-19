@@ -22,7 +22,7 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/edit/**", "/rides/edit/**", "/contact", "/store/**", "/register", "/login", "/rides/search", "/loginn", "/logout", "/Myrides", "/addrides", "/rides", "/about")
+                        .requestMatchers("/", "/edit/**", "/rides/edit/**", "/contact", "/store/**", "/register", "/login", "/rides/search", "/loginn", "/logout", "/Myrides", "/addrides", "/rides", "/about","/update-coordinates")
                         .permitAll()
                         .requestMatchers("/css/**", "/images/**", "/js/**")
                         .permitAll()

@@ -69,6 +69,11 @@ public class RideController {
             return "error"; // Afficher une page d'erreur en cas de problème
         }
     }
+    @GetMapping("/api/rides")
+    @ResponseBody
+    public List<Ride> getAllRidesApi() {
+        return rideService.getAllRides();
+    }
 
     // Méthode pour afficher tous les trajets
     @GetMapping("/rides")
@@ -207,6 +212,22 @@ public class RideController {
         }
         return "redirect:/Myrides";
     }
+    @GetMapping("/map")
+    public String showMapPage(Model model) {
+        // Get all rides from the service
+        List<Ride> rides = rideService.getAllRides(); // Fetch all rides from the database
+
+        // Add rides to the model to make them available in the Thymeleaf template
+        model.addAttribute("rides", rides);
+
+        return "map"; // Return the view "map.html"
+    }
+    @PostMapping("/update-coordinates")
+    public ResponseEntity<String> updateCoordinates() {
+        rideService.updateCoordinatesForAllRides();
+        return ResponseEntity.ok("Coordinates updated successfully");
+    }
+
 
 }
 

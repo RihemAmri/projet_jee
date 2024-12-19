@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import org.json.JSONObject;
+
 
 @Service
 public class RideServiceImpl implements RideService {
@@ -16,11 +18,15 @@ public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
     private final ReservationRepository reservationRepository;
     private final EmailService emailService;
+    private final GeocodingService geocodingService;
+    // Ajouter votre service de géocodage
 
-    public RideServiceImpl(RideRepository rideRepository, ReservationRepository reservationRepository, EmailService emailService) {
+
+    public RideServiceImpl(RideRepository rideRepository, ReservationRepository reservationRepository, EmailService emailService, GeocodingService geocodingService) {
         this.rideRepository = rideRepository;
         this.reservationRepository = reservationRepository;
         this.emailService = emailService;
+        this.geocodingService = geocodingService; // Injecter le service
     }
     @Override
     public List<Ride> getAllRides() {
@@ -37,9 +43,31 @@ public class RideServiceImpl implements RideService {
     }
     @Override
     public Ride saveRide(Ride ride) {
-        // Sauvegarde du Ride dans la base de données
+        // Utiliser le service de géocodage pour obtenir les coordonnées
+        try {
+            double[] departureCoordinates = geocodingService.getCoordinates(ride.getDeparturePoint());
+            double[] destinationCoordinates = geocodingService.getCoordinates(ride.getDestination());
+
+            // Vérifier que les coordonnées de départ ne sont pas nulles
+            if (departureCoordinates != null) {
+                ride.setDepartureLatitude(departureCoordinates[0]); // Utilisation de [0] pour latitude
+                ride.setDepartureLongitude(departureCoordinates[1]); // Utilisation de [1] pour longitude
+            }
+
+            // Vérifier que les coordonnées de destination ne sont pas nulles
+            if (destinationCoordinates != null) {
+                ride.setDestinationLatitude(destinationCoordinates[0]); // Utilisation de [0] pour latitude
+                ride.setDestinationLongitude(destinationCoordinates[1]); // Utilisation de [1] pour longitude
+            }
+        } catch (Exception e) {
+            // Gérer les erreurs de géocodage (par exemple, journaux ou actions spécifiques)
+            System.err.println("Erreur lors du géocodage : " + e.getMessage());
+        }
+
+        // Sauvegarder le ride avec les coordonnées mises à jour
         return rideRepository.save(ride);
     }
+
     @Override
     public Ride getRideById(Long id) {
         return rideRepository.findById(id).orElseThrow(() -> new RuntimeException("Ride not found"));
@@ -108,6 +136,29 @@ public class RideServiceImpl implements RideService {
 
         // Supprimer le trajet
         rideRepository.delete(ride);
+    }
+    @Override
+    public void updateCoordinatesForAllRides() {
+        List<Ride> rides = rideRepository.findAll();
+
+        for (Ride ride : rides) {
+            // Géocoder le point de départ
+            double[] departureCoordinates = geocodingService.getCoordinates(ride.getDeparturePoint());
+            if (departureCoordinates != null) {
+                ride.setDepartureLatitude(departureCoordinates[0]);
+                ride.setDepartureLongitude(departureCoordinates[1]);
+            }
+
+            // Géocoder le point de destination
+            double[] destinationCoordinates = geocodingService.getCoordinates(ride.getDestination());
+            if (destinationCoordinates != null) {
+                ride.setDestinationLatitude(destinationCoordinates[0]);
+                ride.setDestinationLongitude(destinationCoordinates[1]);
+            }
+
+            // Sauvegarder les modifications
+            rideRepository.save(ride);
+        }
     }
 
 }

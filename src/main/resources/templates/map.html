@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find a Ride</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .form-container {
+            margin: 0 auto;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        #map {
+            width: 100%;
+            height: 500px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Find a Ride</h1>
+<div class="form-container">
+    <label for="currentLocation">Your Current Location:</label>
+    <input type="text" id="currentLocation" class="form-control" placeholder="Enter your current address">
+
+    <label for="destination">Destination:</label>
+    <input type="text" id="destination" class="form-control" placeholder="Enter your destination">
+
+    <button id="findRouteBtn" class="btn">Find Route</button>
+</div>
+
+<!-- Map container -->
+<div id="map"></div>
+
+<!-- Include Leaflet and Routing Machine -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+<script>
+    // Initialize the map centered on Tunis
+    const map = L.map('map').setView([36.8065, 10.1815], 13); // Default view: Tunis
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    let routingControl;
+
+    // Fetch ride data from the server
+    async function fetchRides() {
+        try {
+            const response = await fetch('/api/rides'); // Replace with your API endpoint
+            const rides = await response.json();
+
+            // Display each ride as a marker on the map
+            rides.forEach(ride => {
+                const marker = L.marker([ride.departureLatitude, ride.departureLongitude])
+                    .addTo(map)
+                    .bindPopup(`
+                        <strong>Driver:</strong> ${ride.driverName}<br>
+                        <strong>Start:</strong> ${ride.departurePoint}<br>
+                        <strong>Destination:</strong> ${ride.destination}<br>
+                        <strong>Distance:</strong> ${ride.distance} km
+                    `);
+
+                // Optionally, draw the route
+                L.Routing.control({
+                    waypoints: [
+                        L.latLng(ride.departureLatitude, ride.departureLongitude),
+                        L.latLng(ride.destinationLatitude, ride.destinationLongitude)
+                    ],
+                    routeWhileDragging: false,
+                    addWaypoints: false,
+                    show: false,
+                    lineOptions: {
+                        styles: [{ color: '#ff7800', weight: 5 }]
+                    }
+                }).addTo(map);
+            });
+        } catch (error) {
+            console.error("Error fetching rides:", error);
+        }
+    }
+
+    // Function to fetch coordinates using Nominatim
+    async function fetchCoordinates(address) {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${address}`);
+        const data = await response.json();
+        if (data.length > 0) {
+            return [data[0].lat, data[0].lon];
+        } else {
+            alert("Address not found: " + address);
+            return null;
+        }
+    }
+
+    // Event Listener for "Find Route" button
+    document.getElementById('findRouteBtn').addEventListener('click', async () => {
+        const currentLocation = document.getElementById('currentLocation').value;
+        const destination = document.getElementById('destination').value;
+
+        if (!currentLocation || !destination) {
+            alert("Please enter both current location and destination!");
+            return;
+        }
+
+        const startCoords = await fetchCoordinates(currentLocation);
+        const endCoords = await fetchCoordinates(destination);
+
+        if (startCoords && endCoords) {
+            // Remove existing route if it exists
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            // Add route to the map
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(startCoords[0], startCoords[1]),
+                    L.latLng(endCoords[0], endCoords[1])
+                ],
+                routeWhileDragging: true,
+                showAlternatives: true,
+                lineOptions: {
+                    styles: [{ color: '#007bff', weight: 5 }]
+                }
+            }).addTo(map);
+
+            // Center map on the route
+            map.setView(startCoords, 12);
+        }
+    });
+
+    // Fetch and display rides from the database on page load
+    fetchRides();
+</script>
+</body>
+</html>

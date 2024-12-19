@@ -115,5 +115,49 @@ public class Ride {
     public List<Reservation> getReservations() {
         return reservations;
     }
+    @Column(nullable = false)
+    private double departureLatitude;
+
+    @Column(nullable = false)
+    private double departureLongitude;
+
+    @Column(nullable = false)
+    private double destinationLatitude;
+
+    @Column(nullable = false)
+    private double destinationLongitude;
+
+    // Getters and Setters
+    public double getDepartureLatitude() {
+        return departureLatitude;
+    }
+
+    public void setDepartureLatitude(double departureLatitude) {
+        this.departureLatitude = departureLatitude;
+    }
+
+    public double getDepartureLongitude() {
+        return departureLongitude;
+    }
+
+    public void setDepartureLongitude(double departureLongitude) {
+        this.departureLongitude = departureLongitude;
+    }
+
+    public double getDestinationLatitude() {
+        return destinationLatitude;
+    }
+
+    public void setDestinationLatitude(double destinationLatitude) {
+        this.destinationLatitude = destinationLatitude;
+    }
+
+    public double getDestinationLongitude() {
+        return destinationLongitude;
+    }
+
+    public void setDestinationLongitude(double destinationLongitude) {
+        this.destinationLongitude = destinationLongitude;
+    }
 
 }
