@@ -21,7 +21,7 @@ public class EmailService {
     public void sendConfirmationEmail(String to, String subject, String text) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(senderEmail);
+            message.setFrom("PathMates <" + senderEmail + ">");
             message.setTo(to);
             message.setSubject(subject);
             message.setText(text);

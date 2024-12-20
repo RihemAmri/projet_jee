@@ -10,24 +10,25 @@
   <style>
     /* Styles personnalisés pour les couleurs pastel */
     .pastel-orange {
-      background-color: #FFDAB9; /* Orange pastel */
-      color: brown; /* Texte et icône en brown */
+      background-color: #ff7043; /* Orange pastel */
+      color: white; /* Texte et icône en brown */
     }
     .btn-pastel-orange {
-      background-color: #FFDAB9; /* Bouton pastel orange */
-      color: brown; /* Texte en brown */
+      background-color: #ff7043; /* Bouton pastel orange */
+      color: white; /* Texte en brown */
       border: none;
+      font-weight: bold;
     }
     .btn-pastel-orange:hover {
-      background-color: #FFC4A3; /* Couleur légèrement plus foncée au survol */
+      background-color: lightsalmon; /* Couleur légèrement plus foncée au survol */
       color: white;
     }
     .form-icon {
-      color: brown; /* Icônes du formulaire en brown */
+      color: orange ; /* Icônes du formulaire en brown */
       margin-right: 10px;
     }
     .card-header h3 i {
-      color: brown; /* Icône dans l'en-tête en brown */
+      color: white; /* Icône dans l'en-tête en brown */
     }
   </style>
 </head>
@@ -41,6 +42,7 @@
       <!-- Card for the booking form -->
       <div class="card shadow-sm">
         <div class="card-header text-center pastel-orange">
+
           <h3><i class="bi bi-calendar-check"></i> Book a Seat</h3>
         </div>
         <div class="card-body">
@@ -48,7 +50,13 @@
             <!-- Hidden field for ride ID -->
             <input type="hidden" name="rideId" th:value="${rideId}">
             <!-- Number of seats -->
+            <img th:src="@{/images/girl_car.jpg}"
+                 alt="Booking Image"
+                 class="img-fluid mb-3 d-block mx-auto"
+                 style="max-height: 250px; width: auto; border-radius: 10px;">
+
             <div class="mb-3">
+
               <label for="numberOfSeats" class="form-label">
                 <i class="bi bi-person-fill form-icon"></i>Number of Seats
               </label>
