@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class RideController {
@@ -79,15 +80,23 @@ public class RideController {
     @GetMapping("/rides")
     public String getAllRides(HttpSession session, Model model) {
         // Récupérer les informations de la session
-        String role = (String) session.getAttribute("role");  // récupérer le rôle de l'utilisateur depuis la session
+        String role = (String) session.getAttribute("role"); // récupérer le rôle de l'utilisateur depuis la session
         model.addAttribute("role", role);
 
-        // Récupérer tous les trajets
-        List<Ride> rides = rideService.getAllRides(); // Récupérer tous les trajets
-        model.addAttribute("rides", rides); // Ajouter les trajets au modèle
+        // Obtenir la date et l'heure actuelles
+        Date now = new Date();
+
+        // Récupérer tous les trajets et filtrer ceux avec une date de départ future
+        List<Ride> rides = rideService.getAllRides().stream()
+                .filter(ride -> ride.getDepartureDate().after(now)) // Vérifiez que getDepartureDate retourne un java.util.Date
+                .collect(Collectors.toList());
+
+        // Ajouter les trajets filtrés au modèle
+        model.addAttribute("rides", rides);
 
         return "rides"; // Retourner la vue "rides"
     }
+
 
     // Méthode pour rechercher les trajets selon les critères
     @GetMapping("/rides/search")
@@ -100,18 +109,32 @@ public class RideController {
             HttpSession session, Model model) {
 
         // Récupérer les informations de la session
-        String role = (String) session.getAttribute("role");  // récupérer le rôle de l'utilisateur depuis la session
-
-        // Ajouter le rôle au modèle pour l'afficher dans la page
+        String role = (String) session.getAttribute("role");
         model.addAttribute("role", role);
 
-        // Convertir LocalDateTime en Date
-        Date dateForSearch = convertToDate(departureDate);
+        // Obtenir la date et l'heure actuelles comme un objet Date
+        Date now = new Date();
+
+        // Convertir departureDate en java.util.Date si nécessaire
+        Date dateForSearch = null;
+        if (departureDate != null) {
+            dateForSearch = Date.from(departureDate.atZone(ZoneId.systemDefault()).toInstant());
+            // Validation pour vérifier que la date de départ est future
+            if (dateForSearch.before(now)) {
+                model.addAttribute("error", "La date de départ doit être dans le futur.");
+                return "rides";
+            }
+        }
 
         // Rechercher les trajets en fonction des critères
         List<Ride> rides = rideService.searchRides(departurePoint, destination, dateForSearch, maxPrice, driverName);
 
-        // Ajouter les résultats de recherche et les critères de recherche au modèle
+        // Filtrer les trajets avec une date de départ future
+        rides = rides.stream()
+                .filter(ride -> ride.getDepartureDate().after(now)) // Vérifiez que getDepartureDate retourne java.util.Date
+                .collect(Collectors.toList());
+
+        // Ajouter les résultats et critères au modèle
         model.addAttribute("rides", rides);
         model.addAttribute("departurePoint", departurePoint);
         model.addAttribute("destination", destination);
@@ -119,16 +142,11 @@ public class RideController {
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("driverName", driverName);
 
-        return "rides"; // Retourner la vue "rides"
+        return "rides";
     }
 
-    // Convertir LocalDateTime en Date
-    private Date convertToDate(LocalDateTime localDateTime) {
-        if (localDateTime == null) {
-            return null;
-        }
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-    }
+
+
     @GetMapping("/Myrides")
     public String getUserRides(Model model, HttpSession session) {
         // Récupérer l'ID utilisateur depuis la session
