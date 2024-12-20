@@ -276,6 +276,55 @@ public class ReservationController {
         }
     }*/
 
+    @PostMapping("/driver/cancel-reservation/{reservationId}")
+    public String cancelReservationByDriver(@PathVariable Long reservationId, HttpSession session, Model model) {
+        try {
+            // Vérifiez si le conducteur est connecté
+            Long driverId = (Long) session.getAttribute("id");
+            if (driverId == null) {
+                return "redirect:/loginn"; // Redirigez vers la page de connexion si non connecté
+            }
+
+            // Récupérez la réservation
+            Reservation reservation = reservationService.findById(reservationId);
+            if (reservation == null || !reservation.getRide().getDriver().getId().equals(driverId)) {
+                return "redirect:/driver/reservationhistory?error=Unauthorized"; // Vérifiez l'autorisation
+            }
+
+            // Récupérez la course associée et mettez à jour les places disponibles
+            Ride ride = reservation.getRide();
+            ride.setAvailableSeats(ride.getAvailableSeats() + reservation.getSeatsReserved());
+            rideService.saveRide(ride);
+
+            // Supprimez la réservation
+            reservationService.deleteReservation(reservationId);
+
+            // Envoyez un email d'excuse au passager
+            String passengerEmail = reservation.getPassenger().getEmail();
+            String passengerSubject = "Ride Cancellation";
+            String passengerText = "Dear " + reservation.getPassenger().getFirstName() + " " + reservation.getPassenger().getLastName() +
+                    ",\n\nWe regret to inform you that your reservation for the ride \"" + ride.getDeparturePoint() +
+                    " - " + ride.getDestination() + "\" has been canceled by the driver. We apologize for any inconvenience caused.\n\nBest regards,\nCarpooling Team";
+
+            emailService.sendConfirmationEmail(passengerEmail, passengerSubject, passengerText);
+
+            // Envoyez un email de confirmation au conducteur
+            String driverEmail = ride.getDriver().getEmail();
+            String driverSubject = "Reservation Successfully Canceled";
+            String driverText = "Dear " + ride.getDriver().getFirstName() + " " + ride.getDriver().getLastName() +
+                    ",\n\nYou have successfully canceled the reservation for the ride \"" + ride.getDeparturePoint() +
+                    " - " + ride.getDestination() + "\". The passenger was informed about this cancellation.\n\nBest regards,\nCarpooling Team";
+
+            emailService.sendConfirmationEmail(driverEmail, driverSubject, driverText);
+
+            return "redirect:/driver/reservationhistory?success=Reservation canceled successfully.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "An error occurred while canceling the reservation.");
+            return "error"; // Affichez une page d'erreur en cas de problème
+        }
+    }
+
 
 
 

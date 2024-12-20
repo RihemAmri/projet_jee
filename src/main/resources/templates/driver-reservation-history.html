@@ -69,6 +69,7 @@
       <th>Seats Reserved</th>
       <th>Total Price</th>
       <th>Departure Date</th>
+      <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -79,10 +80,15 @@
       <td th:text="${reservation.seatsReserved}"></td>
       <td th:text="${reservation.totalPrice}"></td>
       <td th:text="${#dates.format(reservation.ride.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
+      <td>
+        <form th:action="@{/driver/cancel-reservation/{id}(id=${reservation.id})}" method="post" onsubmit="confirmCancellation(event)">
+          <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+        </form>
+      </td>
 
     </tr>
     <tr th:if="${#lists.isEmpty(upcomingReservations)}">
-      <td colspan="5" class="text-center">No upcoming reservations</td>
+      <td colspan="6" class="text-center">No upcoming reservations</td>
     </tr>
     </tbody>
   </table>

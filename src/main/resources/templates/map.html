@@ -6,6 +6,7 @@
     <title>Find a Ride</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,18 +14,28 @@
             margin: 0;
             padding: 0;
         }
+
         h1 {
             text-align: center;
             margin: 20px 0;
         }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+            height: calc(100vh - 60px); /* Viewport height minus header */
+        }
+
         .form-container {
-            margin: 0 auto;
-            max-width: 600px;
-            padding: 20px;
+            flex: 1;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-right: 20px;
         }
+
         .form-control {
             width: 100%;
             padding: 10px;
@@ -32,6 +43,7 @@
             border-radius: 5px;
             border: 1px solid #ddd;
         }
+
         .btn {
             background-color: #007bff;
             color: #fff;
@@ -41,28 +53,38 @@
             cursor: pointer;
             width: 100%;
         }
+
         #map {
-            width: 100%;
-            height: 500px;
-            margin-top: 20px;
+            flex-grow: 1;
+            height: 100%;
             border-radius: 10px;
         }
     </style>
 </head>
 <body>
 <h1>Find a Ride</h1>
-<div class="form-container">
-    <label for="currentLocation">Your Current Location:</label>
-    <input type="text" id="currentLocation" class="form-control" placeholder="Enter your current address">
 
-    <label for="destination">Destination:</label>
-    <input type="text" id="destination" class="form-control" placeholder="Enter your destination">
+<div class="container">
+    <!-- Form container on the left -->
+    <div class="form-container">
+        <label for="currentLocation">Your Current Location:</label>
+        <input type="text" id="currentLocation" class="form-control" placeholder="Enter your current address">
 
-    <button id="findRouteBtn" class="btn">Find Route</button>
+        <label for="destination">Destination:</label>
+        <input type="text" id="destination" class="form-control" placeholder="Enter your destination">
+
+        <button id="findRouteBtn" class="btn">Find Route</button><br>
+        <p>    </p>
+
+            <!-- Nouveau bouton ajouté ici -->
+        <a href="/rides" >
+            <i class="bi bi-arrow-left"></i> Back to Rides
+        </a>
+    </div>
+
+    <!-- Map container on the right -->
+    <div id="map"></div>
 </div>
-
-<!-- Map container -->
-<div id="map"></div>
 
 <!-- Include Leaflet and Routing Machine -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -75,46 +97,120 @@
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
-        attribution: '© OpenStreetMap'
+        attribution: 'Â© OpenStreetMap'
     }).addTo(map);
 
     let routingControl;
 
-    // Fetch ride data from the server
-    async function fetchRides() {
-        try {
-            const response = await fetch('/api/rides'); // Replace with your API endpoint
-            const rides = await response.json();
-
-            // Display each ride as a marker on the map
-            rides.forEach(ride => {
-                const marker = L.marker([ride.departureLatitude, ride.departureLongitude])
-                    .addTo(map)
-                    .bindPopup(`
-                        <strong>Driver:</strong> ${ride.driverName}<br>
-                        <strong>Start:</strong> ${ride.departurePoint}<br>
-                        <strong>Destination:</strong> ${ride.destination}<br>
-                        <strong>Distance:</strong> ${ride.distance} km
-                    `);
-
-                // Optionally, draw the route
-                L.Routing.control({
-                    waypoints: [
-                        L.latLng(ride.departureLatitude, ride.departureLongitude),
-                        L.latLng(ride.destinationLatitude, ride.destinationLongitude)
-                    ],
-                    routeWhileDragging: false,
-                    addWaypoints: false,
-                    show: false,
-                    lineOptions: {
-                        styles: [{ color: '#ff7800', weight: 5 }]
-                    }
-                }).addTo(map);
-            });
-        } catch (error) {
-            console.error("Error fetching rides:", error);
+    // Ride data as constants
+    const rides = [
+        {
+            departureLatitude: 36.7624363,
+            departureLongitude: 9.833619078262766,
+            destinationLatitude: 36.8210248,
+            destinationLongitude: 10.264157332253166,
+            driverName: 'Driver 1',
+            departurePoint: 'Gouvernorat La Manouba, Tunisie',
+            destination: 'Lac de Tunis, Tunis, Gouvernorat Tunis, Tunisie',
+            distance: 5
+        },
+        {
+            departureLatitude: 36.968573500000005,
+            departureLongitude: 10.121985506329507,
+            destinationLatitude: 36.81235915,
+            destinationLongitude: 10.140650010510956,
+            driverName: 'Driver 2',
+            departurePoint: 'Gouvernorat Ariana, Tunisie',
+            destination: 'Bardo, Délégation Le Bardo, Gouvernorat Tunis, Tunisie',
+            distance: 2
+        },
+        {
+            departureLatitude: 36.8210248,
+            departureLongitude: 10.264157332253166,
+            destinationLatitude: 36.7624363,
+            destinationLongitude: 9.833619078262766,
+            driverName: 'Driver 3',
+            departurePoint: 'Lac de Tunis, Tunis, Gouvernorat Tunis, Tunisie',
+            destination: 'Gouvernorat La Manouba, Tunisie',
+            distance: 3
+        },
+        {
+            departureLatitude: 36.8210248,
+            departureLongitude: 10.264157332253166,
+            destinationLatitude: 36.7624363,
+            destinationLongitude: 9.833619078262766,
+            driverName: 'Driver 4',
+            departurePoint: 'Lac de Tunis, Tunis, Gouvernorat Tunis, Tunisie',
+            destination: 'Gouvernorat La Manouba, Tunisie',
+            distance: 3
+        },
+        {
+            departureLatitude: 36.7624363,
+            departureLongitude: 9.833619078262766,
+            destinationLatitude: 36.8476666,
+            destinationLongitude: 10.2172345,
+            driverName: 'Driver 5',
+            departurePoint: 'Gouvernorat La Manouba, Tunisie',
+            destination: 'AÉROPORT TUNIS CARTHAGE, Boulevard du Leader Yasser Arafat, Zone Industrielle La Charguia I, Ech-Charguia, Délégation Cité El Khadra, Tunis, Gouvernorat Tunis, 2035, Tunisie',
+            distance: 10
+        },
+        {
+            departureLatitude: 36.843975,
+            departureLongitude: 10.15393525419729,
+            destinationLatitude: 36.968573500000005,
+            destinationLongitude: 10.121985506329507,
+            driverName: 'Driver 6',
+            departurePoint: 'El Manar, Délégation El Menzah, Gouvernorat Tunis, Tunisie',
+            destination: 'Gouvernorat Ariana, Tunisie',
+            distance: 2
+        },
+        {
+            departureLatitude: 36.7624363,
+            departureLongitude: 9.833619078262766,
+            destinationLatitude: 36.8002068,
+            destinationLongitude: 10.1857757,
+            driverName: 'Driver 7',
+            departurePoint: 'Gouvernorat La Manouba, Tunisie',
+            destination: 'Gouvernorat Tunis, Tunisie',
+            distance: 4
+        },
+        {
+            departureLatitude: 36.8210248,
+            departureLongitude: 10.264157332253166,
+            destinationLatitude: 36.8790882,
+            destinationLongitude: 10.327678,
+            driverName: 'Driver 8',
+            departurePoint: 'Lac de Tunis, Tunis, Gouvernorat Tunis, Tunisie',
+            destination: 'La Marsa, Gouvernorat Tunis, 2070, Tunisie',
+            distance: 2
         }
-    }
+    ];
+
+    // Display each ride as a marker on the map
+    rides.forEach(ride => {
+        const marker = L.marker([ride.departureLatitude, ride.departureLongitude])
+            .addTo(map)
+            .bindPopup(`
+                <strong>Driver:</strong> ${ride.driverName}<br>
+                <strong>Start:</strong> ${ride.departurePoint}<br>
+                <strong>Destination:</strong> ${ride.destination}<br>
+                <strong>Distance:</strong> ${ride.distance} km
+            `);
+
+        // Optionally, draw the route
+        L.Routing.control({
+            waypoints: [
+                L.latLng(ride.departureLatitude, ride.departureLongitude),
+                L.latLng(ride.destinationLatitude, ride.destinationLongitude)
+            ],
+            routeWhileDragging: false,
+            addWaypoints: false,
+            show: false,
+            lineOptions: {
+                styles: [{ color: '#1a6c14', weight: 5 }]
+            }
+        }).addTo(map);
+    });
 
     // Function to fetch coordinates using Nominatim
     async function fetchCoordinates(address) {
@@ -164,9 +260,6 @@
             map.setView(startCoords, 12);
         }
     });
-
-    // Fetch and display rides from the database on page load
-    fetchRides();
 </script>
 </body>
 </html>

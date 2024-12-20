@@ -14,7 +14,6 @@
             font-family: Arial, sans-serif;
         }
 
-
         .search-bar {
             background-color: #f5f5f5;
             border-radius: 15px;
@@ -46,6 +45,7 @@
             position: relative;
             min-height: 150px;
         }
+
         .ride-card .ride-info {
             flex: 1; /* Permet à la section info de prendre toute la largeur disponible */
         }
@@ -106,7 +106,6 @@
 
             <div class="col-md-2">
                 <input type="datetime-local" name="departureDate" class="form-control">
-
             </div>
             <div class="col-md-2">
                 <input type="number" name="maxPrice" class="form-control" placeholder="Max Price" >
@@ -114,8 +113,13 @@
             <div class="col-md-2">
                 <input type="text" name="driverName" class="form-control" placeholder="Driver Name" >
             </div>
+
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+            <div class="col-md-2 ms-auto">
+                <!-- Nouveau bouton aligné à droite -->
+                <a href="/map" class="btn btn-primary w-100">Go to Map</a>
             </div>
         </form>
     </div>
@@ -129,7 +133,7 @@
                     <img src="/images/car_ride.png" alt="Vehicle Image">
                     <div class="ride-info">
                         <h5><i class="bi bi-geo-alt-fill text-success"></i> Departure: <span th:text="${ride.departurePoint}">Paris</span></h5>
-                         <h5>   <i class="bi bi-geo-alt-fill text-success"></i> Destination:<span th:text="${ride.destination}">Berlin</span></h5>
+                        <h5><i class="bi bi-geo-alt-fill text-success"></i> Destination: <span th:text="${ride.destination}">Berlin</span></h5>
                         <div class="ride-details">
                             <p><i class="bi bi-clock text-secondary"></i> Departure: <span th:text="${ride.departureDate}">2024-12-05 09:00 AM</span></p>
                             <p><i class="bi bi-calendar text-secondary"></i> Date: <span th:text="${ride.departureDate}">2024-12-05</span></p>
