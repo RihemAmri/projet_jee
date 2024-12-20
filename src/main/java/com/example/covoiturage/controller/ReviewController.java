@@ -179,7 +179,7 @@ public class ReviewController {
         model.addAttribute("message", "Merci pour votre évaluation !");
 
         // Rediriger vers l'historique des réservations après soumission
-        return "driver-reservation-history";
+        return  "redirect:/driver/reservationhistory";
     }
     @GetMapping("/Review")
     public String getReviews(Model model, HttpSession session) {
