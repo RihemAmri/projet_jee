@@ -7,8 +7,12 @@
     <style>
         /* Applique un fond orange à l'en-tête du tableau */
         table thead.custom-header {
-            background-color: #ff7043 !important; /* Couleur orange */
             color: white !important; /* Texte blanc pour contraste */
+        }
+
+        /* Style pour rendre les colonnes plus larges */
+        .wide-column {
+            width: 200px; /* Vous pouvez ajuster cette valeur selon vos besoins */
         }
     </style>
 </head>
@@ -21,10 +25,10 @@
         <thead class="custom-header">
         <tr>
             <th>#</th> <!-- Colonne pour le compteur -->
-            <th>Departure Point</th>
+            <th class="wide-column">Departure Point</th>
             <th>Destination</th>
-            <th>Departure Date</th>
-            <th th:text="${role == 'driver' ? 'Passenger Name' : 'Driver Name'}"></th>
+            <th class="wide-column">Departure Date</th> <!-- Colonne élargie -->
+            <th class="wide-column" th:text="${role == 'driver' ? 'Passenger Name' : 'Driver Name'}"></th> <!-- Colonne élargie -->
             <th>Rating</th>
             <th>Comment</th>
         </tr>

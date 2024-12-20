@@ -116,7 +116,7 @@ public class ReservationController {
             // 1. Send a confirmation email to the passenger
             String passengerEmail = appUser.getEmail();
             String passengerSubject = "Reservation Confirmed";
-            String passengerText = "Your reservation for the ride \"" + ride.getDeparturePoint() + " - " + ride.getDestination() + "\" has been confirmed. Number of seats reserved: " + numberOfSeats + ".";
+            String passengerText = "Your reservation for the ride \"" + ride.getDeparturePoint() + " - " + ride.getDestination() + "\" has been confirmed By the Driver: "+ride.getDriver().getLastName()+" "+ride.getDriver().getFirstName()+" Number of seats reserved: " + numberOfSeats + ".";
 
             emailService.sendConfirmationEmail(passengerEmail, passengerSubject, passengerText);
 
